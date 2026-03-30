@@ -444,6 +444,10 @@ let currentKeywords = [];
 
 // ===== Init =====
 function initApp() {
+    // Hide loading indicator before rendering (renderResults replaces its parent content)
+    const loadingEl = document.getElementById('loading');
+    if (loadingEl) loadingEl.style.display = 'none';
+
     buildDeptFilter();
     showAllResults();
     document.getElementById('searchInput').addEventListener('keydown', e => {
@@ -453,7 +457,6 @@ function initApp() {
         if (e.key === 'Enter') filterPerf();
     });
     document.getElementById('searchInput').focus();
-    document.getElementById('loading').style.display = 'none';
     renderPerfDashboard();
 }
 
