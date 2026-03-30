@@ -271,6 +271,80 @@
             padding:6px 10px; background:#f8f9fa; border-radius:4px; font-family:monospace;
         }
 
+        /* ===== Stats Data Tab styles ===== */
+        .stats-area { max-width: 1100px; margin: 0 auto; padding: 20px 16px 40px; }
+        .stats-toolbar { margin-bottom: 16px; }
+        .stats-search-box {
+            background: white; border-radius: 12px; padding: 16px 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1); display: flex; gap: 10px;
+        }
+        .stats-search-box input {
+            flex: 1; padding: 10px 14px; font-size: 15px;
+            border: 2px solid #ddd; border-radius: 8px; outline: none; font-family: inherit;
+        }
+        .stats-search-box input:focus { border-color: #2980b9; }
+        .stats-category-bar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+        .stats-cat-tag {
+            display: inline-flex; align-items: center; gap: 4px; padding: 6px 14px;
+            font-size: 13px; font-weight: 600; border-radius: 20px; border: 2px solid #ddd;
+            background: white; cursor: pointer; transition: all 0.2s; user-select: none;
+        }
+        .stats-cat-tag:hover { border-color: #2980b9; }
+        .stats-cat-tag.active { background: #2980b9; color: white; border-color: #2980b9; }
+        .stats-cat-count { font-size: 11px; background: rgba(0,0,0,0.08); padding: 1px 6px; border-radius: 10px; }
+        .stats-cat-tag.active .stats-cat-count { background: rgba(255,255,255,0.3); }
+        .stats-kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .stats-kpi {
+            background: white; border-radius: 10px; padding: 14px 12px; text-align: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06); border-top: 4px solid #2980b9;
+        }
+        .stats-kpi-val { font-size: 24px; font-weight: 800; color: #1a5276; }
+        .stats-kpi-label { font-size: 12px; color: #888; margin-top: 2px; }
+        .stats-card {
+            background: white; border-radius: 10px; margin-bottom: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; transition: box-shadow 0.2s;
+        }
+        .stats-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
+        .stats-card-hdr { padding: 14px 20px; cursor: pointer; display: flex; gap: 10px; align-items: center; }
+        .stats-card-hdr:hover { background: #f8f9fa; }
+        .stats-card-icon { font-size: 20px; flex-shrink: 0; }
+        .stats-card-cat-badge {
+            font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 6px;
+            white-space: nowrap; flex-shrink: 0; color: white;
+        }
+        .stats-card-title { flex: 1; font-size: 14px; font-weight: 700; color: #1a5276; line-height: 1.4; }
+        .stats-card-title mark { background: #fff3cd; color: #333; padding: 0 2px; border-radius: 2px; }
+        .stats-card-rows-badge { font-size: 11px; color: #999; white-space: nowrap; flex-shrink: 0; }
+        .stats-card-toggle { font-size: 18px; color: #aaa; transition: transform 0.3s; flex-shrink: 0; }
+        .stats-card.open .stats-card-toggle { transform: rotate(180deg); }
+        .stats-card-body {
+            display: none; padding: 0 20px 20px; border-top: 1px solid #eee;
+            margin: 0 20px; overflow-x: auto;
+        }
+        .stats-card.open .stats-card-body { display: block; }
+        .stats-table-wrap { overflow-x: auto; margin-top: 14px; }
+        .stats-table { width: 100%; border-collapse: collapse; font-size: 13px; white-space: nowrap; }
+        .stats-table th {
+            background: #e8f4fd; color: #1a5276; font-weight: 700; padding: 8px 10px;
+            border: 1px solid #ccc; position: sticky; top: 0; z-index: 1;
+        }
+        .stats-table td {
+            padding: 6px 10px; border: 1px solid #ddd; vertical-align: top;
+            max-width: 400px; white-space: normal; word-break: break-all;
+        }
+        .stats-table tr:nth-child(even) { background: #fafafa; }
+        .stats-table tr:hover { background: #f0f7fc; }
+        .stats-table td.num { text-align: right; font-variant-numeric: tabular-nums; }
+        .stats-chart-area { margin-top: 16px; max-height: 320px; position: relative; }
+        .stats-chart-area canvas { max-height: 320px; }
+        .stats-show-more {
+            display: inline-block; margin-top: 10px; padding: 6px 16px; font-size: 13px;
+            color: #2980b9; background: #e8f4fd; border: none; border-radius: 6px;
+            cursor: pointer; font-family: inherit; font-weight: 600;
+        }
+        .stats-show-more:hover { background: #d0eafb; }
+        .stats-empty { text-align: center; padding: 60px 20px; color: #999; }
+
         @media (max-width: 600px) {
             .header h1 { font-size: 20px; }
             .search-row { flex-direction: column; }
@@ -278,6 +352,7 @@
             .tab-btn { padding: 12px 16px; font-size: 14px; }
             .kpi-row { grid-template-columns: repeat(2, 1fr); }
             .inner-kpi-row { grid-template-columns: repeat(2, 1fr); }
+            .stats-kpi-row { grid-template-columns: repeat(2, 1fr); }
             .result-header { padding: 12px 14px; }
             .result-content { margin: 0 14px; padding: 0 14px 14px; }
             .result-content-body .indent-1 { padding-left: 1em; }
@@ -311,6 +386,7 @@
         <div class="tab-nav">
             <button class="tab-btn active" onclick="switchTab('qa')">模擬問答查詢</button>
             <button class="tab-btn" onclick="switchTab('perf')">重要績效儀表板</button>
+            <button class="tab-btn" onclick="switchTab('stats')">重要數據統計</button>
         </div>
 
         <!-- QA Tab -->
@@ -350,10 +426,28 @@
             </div>
             <div class="perf-area" id="perfArea"></div>
         </div>
+
+        <!-- Stats Data Tab -->
+        <div class="tab-content" id="tab-stats">
+            <div class="stats-area">
+                <div class="stats-toolbar">
+                    <div class="stats-search-box">
+                        <input type="text" id="statsSearchInput"
+                            placeholder="搜尋數據資料（如：學生數、預算、幼兒園、校舍...）"
+                            oninput="filterStats()">
+                        <button class="btn btn-primary" onclick="filterStats()">搜尋</button>
+                    </div>
+                </div>
+                <div class="stats-category-bar" id="statsCatBar"></div>
+                <div class="stats-kpi-row" id="statsKpiRow"></div>
+                <div class="stats-cards" id="statsCards"></div>
+            </div>
+        </div>
     </div>
 
 <script src="data.js"></script>
 <script src="perf_data.js"></script>
+<script src="stats_data.js"></script>
 <script>
 // ===== Decryption Logic (AES-GCM + PBKDF2) =====
 let QA_DATA = [];
@@ -462,6 +556,9 @@ function initApp() {
     document.getElementById('perfSearchInput').addEventListener('keydown', e => {
         if (e.key === 'Enter') filterPerf();
     });
+    document.getElementById('statsSearchInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') filterStats();
+    });
     document.getElementById('searchInput').focus();
     renderPerfDashboard();
 }
@@ -473,10 +570,14 @@ function switchTab(tab) {
     if (tab === 'qa') {
         document.querySelectorAll('.tab-btn')[0].classList.add('active');
         document.getElementById('tab-qa').classList.add('active');
-    } else {
+    } else if (tab === 'perf') {
         document.querySelectorAll('.tab-btn')[1].classList.add('active');
         document.getElementById('tab-perf').classList.add('active');
         setTimeout(initVisibleCharts, 100);
+    } else if (tab === 'stats') {
+        document.querySelectorAll('.tab-btn')[2].classList.add('active');
+        document.getElementById('tab-stats').classList.add('active');
+        if (!window._statsRendered) { renderStatsTab(); window._statsRendered = true; }
     }
 }
 
@@ -837,6 +938,258 @@ function initChartsInCard(card) {
     });
 
     card.dataset.chartsInitialized = '1';
+}
+
+// ===== Stats Tab =====
+let statsActiveCat = '';
+let statsChartInstances = {};
+
+function renderStatsTab() {
+    buildStatsCatBar();
+    buildStatsKpi();
+    renderStatsCards(STATS_SHEETS, '');
+}
+
+function buildStatsCatBar() {
+    const bar = document.getElementById('statsCatBar');
+    let h = '<span class="stats-cat-tag active" onclick="setStatsCat(\'\')">全部 <span class="stats-cat-count">' + STATS_SHEETS.length + '</span></span>';
+    for (const [cat, info] of Object.entries(STATS_CATEGORIES)) {
+        h += `<span class="stats-cat-tag" onclick="setStatsCat('${cat}')">${info.icon} ${cat} <span class="stats-cat-count">${info.count}</span></span>`;
+    }
+    bar.innerHTML = h;
+}
+
+function setStatsCat(cat) {
+    statsActiveCat = cat;
+    document.querySelectorAll('.stats-cat-tag').forEach(t => t.classList.remove('active'));
+    const tags = document.querySelectorAll('.stats-cat-tag');
+    if (!cat) { tags[0].classList.add('active'); }
+    else { tags.forEach(t => { if (t.textContent.includes(cat)) t.classList.add('active'); }); }
+    filterStats();
+}
+
+function buildStatsKpi() {
+    const kpi = document.getElementById('statsKpiRow');
+    const kpis = [
+        {label: '資料表總數', val: STATS_SHEETS.length + '份', color: '#1a5276'},
+        {label: '涵蓋科室', val: Object.keys(STATS_CATEGORIES).length + '類', color: '#27ae60'},
+        {label: '更新日期', val: STATS_UPDATE_DATE, color: '#f39c12'},
+        {label: '資料來源', val: '第4屆第7次定期會', color: '#8e44ad'},
+    ];
+    kpi.innerHTML = kpis.map(k => `<div class="stats-kpi" style="border-top-color:${k.color}"><div class="stats-kpi-val" style="color:${k.color}">${k.val}</div><div class="stats-kpi-label">${k.label}</div></div>`).join('');
+}
+
+function filterStats() {
+    const q = (document.getElementById('statsSearchInput').value || '').trim().toLowerCase();
+    const keywords = q ? q.split(/\s+/) : [];
+    let filtered = STATS_SHEETS;
+    if (statsActiveCat) filtered = filtered.filter(s => s.category === statsActiveCat);
+    if (keywords.length) {
+        filtered = filtered.filter(s => {
+            const text = (s.name + ' ' + s.title + ' ' + s.category + ' ' + JSON.stringify(s.rows).substring(0, 2000)).toLowerCase();
+            return keywords.every(k => text.includes(k));
+        });
+    }
+    renderStatsCards(filtered, q);
+}
+
+function escStats(s) {
+    if (s == null) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function highlightStats(text, q) {
+    if (!q || !text) return escStats(text);
+    let s = escStats(text);
+    q.split(/\s+/).forEach(k => {
+        if (k) {
+            const re = new RegExp('(' + k.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')', 'gi');
+            s = s.replace(re, '<mark>$1</mark>');
+        }
+    });
+    return s;
+}
+
+function formatStatsVal(v) {
+    if (v == null) return '';
+    if (typeof v === 'number') {
+        if (v > 0 && v < 1) return (v * 100).toFixed(2) + '%';
+        if (Number.isInteger(v)) return v.toLocaleString();
+        return v.toLocaleString(undefined, {maximumFractionDigits: 2});
+    }
+    return String(v);
+}
+
+function isNumeric(v) { return typeof v === 'number' && !isNaN(v); }
+
+function renderStatsCards(sheets, q) {
+    const container = document.getElementById('statsCards');
+    if (!sheets.length) {
+        container.innerHTML = '<div class="stats-empty"><div style="font-size:48px;margin-bottom:16px;">&#128237;</div><div>沒有找到符合條件的資料</div></div>';
+        return;
+    }
+    Object.values(statsChartInstances).forEach(c => { try { c.destroy(); } catch(e) {} });
+    statsChartInstances = {};
+
+    let html = '';
+    sheets.forEach((sheet) => {
+        const catInfo = STATS_CATEGORIES[sheet.category] || {icon:'&#128196;', color:'#666'};
+        const maxPreviewRows = 20;
+        const rows = sheet.rows;
+        const totalDataRows = rows.length;
+
+        let tableHtml = '<div class="stats-table-wrap"><table class="stats-table">';
+        const showRows = rows.slice(0, maxPreviewRows);
+        let headerRows = 1;
+        if (rows.length > 3) {
+            const r2 = rows[1] || [];
+            const r3 = rows[2] || [];
+            const r2filled = r2.filter(v => v != null).length;
+            const r3filled = r3.filter(v => v != null).length;
+            const r1filled = (rows[0]||[]).filter(v=>v!=null).length;
+            if (r2filled >= 3 && r3filled >= 3 && r2filled >= r1filled) headerRows = 3;
+            else if (r2filled >= 3) headerRows = 2;
+        }
+
+        for (let hi = 0; hi < Math.min(headerRows, showRows.length); hi++) {
+            tableHtml += '<tr>';
+            (showRows[hi] || []).forEach(v => { tableHtml += `<th>${highlightStats(formatStatsVal(v), q)}</th>`; });
+            tableHtml += '</tr>';
+        }
+        for (let ri = headerRows; ri < showRows.length; ri++) {
+            tableHtml += '<tr>';
+            (showRows[ri] || []).forEach(v => {
+                const cls = isNumeric(v) ? ' class="num"' : '';
+                tableHtml += `<td${cls}>${highlightStats(formatStatsVal(v), q)}</td>`;
+            });
+            tableHtml += '</tr>';
+        }
+        tableHtml += '</table></div>';
+        if (totalDataRows > maxPreviewRows) {
+            tableHtml += `<button class="stats-show-more" onclick="expandStatsTable(this, ${sheet.id})">顯示全部 ${totalDataRows} 列資料</button>`;
+        }
+
+        html += `<div class="stats-card" id="stats-card-${sheet.id}">
+            <div class="stats-card-hdr" onclick="toggleStatsCard(${sheet.id})">
+                <span class="stats-card-icon">${catInfo.icon}</span>
+                <span class="stats-card-cat-badge" style="background:${catInfo.color}">${sheet.category}</span>
+                <span class="stats-card-title">${highlightStats(sheet.title, q)}</span>
+                <span class="stats-card-rows-badge">${totalDataRows} 列</span>
+                <span class="stats-card-toggle">&#9660;</span>
+            </div>
+            <div class="stats-card-body">
+                <div id="stats-chart-${sheet.id}" class="stats-chart-area"></div>
+                ${tableHtml}
+            </div>
+        </div>`;
+    });
+    container.innerHTML = html;
+}
+
+function toggleStatsCard(id) {
+    const card = document.getElementById('stats-card-' + id);
+    card.classList.toggle('open');
+    if (card.classList.contains('open')) tryRenderStatsChart(id);
+}
+
+function tryRenderStatsChart(sheetId) {
+    if (statsChartInstances[sheetId]) return;
+    const sheet = STATS_SHEETS.find(s => s.id === sheetId);
+    if (!sheet || sheet.rows.length < 4) return;
+    const rows = sheet.rows;
+    let headerRows = 1;
+    if (rows.length > 3) {
+        const r2 = rows[1] || [];
+        if (r2.filter(v => v != null).length >= 3) headerRows = 2;
+    }
+    const dataRows = rows.slice(headerRows);
+    if (dataRows.length < 3) return;
+
+    let yearCol = -1;
+    for (let ci = 0; ci < Math.min((dataRows[0]||[]).length, 3); ci++) {
+        const vals = dataRows.map(r => r[ci]).filter(v => v != null);
+        const yearLike = vals.filter(v => {
+            const s = String(v);
+            return /^\d{2,3}(學年度)?$/.test(s) || /^\d{4}/.test(s) || /^\d{2,3}年/.test(s);
+        });
+        if (yearLike.length >= 3) { yearCol = ci; break; }
+    }
+    if (yearCol < 0) return;
+
+    const numCols = [];
+    const headers = rows[headerRows - 1] || rows[0] || [];
+    const maxCols = Math.min((dataRows[0]||[]).length, 15);
+    for (let ci = 0; ci < maxCols; ci++) {
+        if (ci === yearCol) continue;
+        const nums = dataRows.filter(r => r[ci] != null && typeof r[ci] === 'number');
+        if (nums.length >= 3) numCols.push({col: ci, label: headers[ci] ? String(headers[ci]).replace(/\n/g,' ').substring(0,20) : 'Col ' + ci});
+        if (numCols.length >= 4) break;
+    }
+    if (numCols.length === 0) return;
+
+    const labels = dataRows.map(r => { const v = r[yearCol]; return v != null ? String(v).replace('學年度','').replace('年度','').trim() : ''; }).filter(l => l);
+    const chartColors = ['#2980b9','#e74c3c','#27ae60','#f39c12'];
+    const datasets = numCols.map((nc, i) => ({
+        label: nc.label,
+        data: dataRows.slice(0, labels.length).map(r => r[nc.col] != null && typeof r[nc.col] === 'number' ? r[nc.col] : null),
+        borderColor: chartColors[i % chartColors.length],
+        backgroundColor: chartColors[i % chartColors.length] + '22',
+        tension: 0.3, fill: numCols.length === 1, pointRadius: 3,
+    }));
+
+    const container = document.getElementById('stats-chart-' + sheetId);
+    container.innerHTML = '<canvas></canvas>';
+    const ctx = container.querySelector('canvas').getContext('2d');
+    statsChartInstances[sheetId] = new Chart(ctx, {
+        type: 'line', data: { labels, datasets },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top', labels: { font: {size: 11} } },
+                tooltip: { callbacks: { label: function(c) {
+                    let v = c.parsed.y;
+                    if (v != null && v > 0 && v < 1) return c.dataset.label + ': ' + (v*100).toFixed(2) + '%';
+                    return c.dataset.label + ': ' + (v != null ? v.toLocaleString() : '-');
+                }}}
+            },
+            scales: { y: { beginAtZero: false, ticks: { callback: function(v) {
+                if (v >= 10000) return (v/10000).toFixed(1) + '萬';
+                if (v >= 1000) return (v/1000).toFixed(1) + 'K';
+                if (v > 0 && v < 1) return (v*100).toFixed(1) + '%';
+                return v;
+            }}}}
+        }
+    });
+}
+
+function expandStatsTable(btn, sheetId) {
+    const sheet = STATS_SHEETS.find(s => s.id === sheetId);
+    if (!sheet) return;
+    const card = document.getElementById('stats-card-' + sheetId);
+    const wrap = card.querySelector('.stats-table-wrap');
+    const rows = sheet.rows;
+    let headerRows = 1;
+    if (rows.length > 3) {
+        const r2 = rows[1] || [];
+        if (r2.filter(v => v != null).length >= 3) headerRows = 2;
+    }
+    let tableHtml = '<table class="stats-table">';
+    for (let hi = 0; hi < headerRows; hi++) {
+        tableHtml += '<tr>';
+        (rows[hi] || []).forEach(v => { tableHtml += `<th>${escStats(formatStatsVal(v))}</th>`; });
+        tableHtml += '</tr>';
+    }
+    for (let ri = headerRows; ri < rows.length; ri++) {
+        tableHtml += '<tr>';
+        (rows[ri] || []).forEach(v => {
+            const cls = isNumeric(v) ? ' class="num"' : '';
+            tableHtml += `<td${cls}>${escStats(formatStatsVal(v))}</td>`;
+        });
+        tableHtml += '</tr>';
+    }
+    tableHtml += '</table>';
+    wrap.innerHTML = tableHtml;
+    btn.style.display = 'none';
 }
 </script>
 </body>
