@@ -247,8 +247,29 @@
         .inner-kpi-value { font-size:22px; font-weight:800; }
         .inner-kpi-label { font-size:12px; color:#888; margin-top:2px; }
 
-        .perf-text-content { margin-top:16px; max-height:400px; overflow-y:auto; padding-right:8px; }
-        .perf-text-content p { font-size:13px; line-height:1.7; color:#444; margin-bottom:4px; }
+        .perf-text-content { margin-top:16px; max-height:500px; overflow-y:auto; padding-right:8px; }
+        .perf-text-content .perf-heading {
+            font-size:15px; font-weight:700; color:#1a5276; margin:18px 0 8px;
+            padding-bottom:6px; border-bottom:2px solid #d4e6f1;
+        }
+        .perf-text-content .perf-heading:first-child { margin-top:0; }
+        .perf-text-content .perf-redlead {
+            font-size:13px; line-height:1.8; color:#444; margin-bottom:6px;
+            padding-left:8px; border-left:3px solid #e74c3c;
+        }
+        .perf-text-content .perf-redlead .red { color:#d32f2f; font-weight:600; }
+        .perf-text-content .perf-subitem {
+            font-size:13px; line-height:1.7; color:#444; margin-bottom:4px;
+            padding-left:20px; text-indent:-8px;
+        }
+        .perf-text-content .perf-subitem .red { color:#d32f2f; font-weight:600; }
+        .perf-text-content .perf-normal {
+            font-size:13px; line-height:1.7; color:#444; margin-bottom:4px;
+        }
+        .perf-text-content .perf-table {
+            font-size:12px; line-height:1.6; color:#555; margin-bottom:4px;
+            padding:6px 10px; background:#f8f9fa; border-radius:4px; font-family:monospace;
+        }
 
         @media (max-width: 600px) {
             .header h1 { font-size: 20px; }
@@ -331,12 +352,9 @@
         </div>
     </div>
 
-<script src="data.js?v=20260330"></script>
-<script src="perf_data.js?v=20260330"></script>
+<script src="data.js"></script>
+<script src="perf_data.js"></script>
 <script>
-console.log('[INIT] index.html v20260330 loaded');
-console.log('[INIT] ENCRYPTED_DATA defined:', typeof ENCRYPTED_DATA !== 'undefined');
-console.log('[INIT] ENCRYPTED_PERF_DATA defined:', typeof ENCRYPTED_PERF_DATA !== 'undefined');
 // ===== Decryption Logic (AES-GCM + PBKDF2) =====
 let QA_DATA = [];
 let PERF_DATA = [];
@@ -399,30 +417,18 @@ async function doLogin() {
     // Decrypt Perf data (independent - failure won't block login)
     try {
         if (typeof ENCRYPTED_PERF_DATA !== 'undefined') {
-            console.log('[LOGIN] ENCRYPTED_PERF_DATA keys:', Object.keys(ENCRYPTED_PERF_DATA));
             PERF_DATA = await decryptEncObj(ENCRYPTED_PERF_DATA, pw);
-            console.log('[LOGIN] PERF_DATA decrypted OK, length:', PERF_DATA.length);
         } else {
-            console.error('[LOGIN] ENCRYPTED_PERF_DATA is undefined - perf_data.js may not have loaded');
+            console.warn('ENCRYPTED_PERF_DATA is undefined');
         }
     } catch (e) {
-        console.error('[LOGIN] 績效資料解密失敗:', e.message, e);
         PERF_DATA = [];
     }
 
     // Success - show app
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('appContainer').style.display = 'block';
-    console.log('[LOGIN] Calling initApp(), PERF_DATA length:', PERF_DATA ? PERF_DATA.length : 'null');
     initApp();
-
-    // Debug: check PERF_DATA after init
-    if (!PERF_DATA || PERF_DATA.length === 0) {
-        console.error('[LOGIN] PERF_DATA is empty after initApp!');
-        document.getElementById('perfArea').innerHTML = '<div style="text-align:center;padding:40px;color:#d32f2f;font-size:16px;">績效資料載入失敗<br>請按 Ctrl+Shift+R 強制重新整理</div>';
-    } else {
-        console.log('[LOGIN] perfArea innerHTML length:', document.getElementById('perfArea').innerHTML.length);
-    }
 }
 
 document.getElementById('passwordInput').addEventListener('keydown', e => {
@@ -722,10 +728,36 @@ function renderPerfDashboard() {
                 });
             }
 
-            if (s.text) {
+            if (s.lines && s.lines.length > 0) {
+                html += '<div class="perf-text-content">';
+                s.lines.forEach(ln => {
+                    const t = escapeHtml(ln.text);
+                    if (ln.type === 'heading') {
+                        html += `<div class="perf-heading">${t}</div>`;
+                    } else if (ln.type === 'red-lead' && ln.red) {
+                        const r = escapeHtml(ln.red);
+                        const rest = t.substring(r.length);
+                        html += `<div class="perf-redlead"><span class="red">${r}</span>${rest}</div>`;
+                    } else if (ln.type === 'subitem') {
+                        if (ln.red) {
+                            const r = escapeHtml(ln.red);
+                            const rest = t.substring(r.length);
+                            html += `<div class="perf-subitem"><span class="red">${r}</span>${rest}</div>`;
+                        } else {
+                            html += `<div class="perf-subitem">${t}</div>`;
+                        }
+                    } else if (ln.type === 'table') {
+                        html += `<div class="perf-table">${t}</div>`;
+                    } else {
+                        html += `<div class="perf-normal">${t}</div>`;
+                    }
+                });
+                html += '</div>';
+            } else if (s.text) {
+                // 向下相容舊格式
                 html += '<div class="perf-text-content">';
                 s.text.split('\n').forEach(line => {
-                    if (line.trim()) html += `<p>${escapeHtml(line.trim())}</p>`;
+                    if (line.trim()) html += `<div class="perf-normal">${escapeHtml(line.trim())}</div>`;
                 });
                 html += '</div>';
             }
