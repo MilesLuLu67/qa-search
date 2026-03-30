@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模擬問答搜尋系統</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: "Microsoft JhengHei", "微軟正黑體", sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* ===== Login Screen ===== */
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a5276, #2980b9);
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 16px;
+            padding: 48px 36px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        .login-box .login-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .login-box h2 {
+            font-size: 22px;
+            color: #1a5276;
+            margin-bottom: 4px;
+        }
+
+        .login-box .login-subtitle {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 28px;
+        }
+
+        .login-box input[type="password"] {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.2s;
+            text-align: center;
+            letter-spacing: 4px;
+        }
+
+        .login-box input[type="password"]:focus {
+            border-color: #2980b9;
+        }
+
+        .login-box .login-btn {
+            width: 100%;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(135deg, #1a5276, #2980b9);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 16px;
+            transition: opacity 0.2s;
+        }
+
+        .login-box .login-btn:hover {
+            opacity: 0.9;
+        }
+
+        .login-box .login-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .login-error {
+            color: #d32f2f;
+            font-size: 14px;
+            margin-top: 12px;
+            display: none;
+        }
+
+        .login-error.show {
+            display: block;
+        }
+
+        /* ===== Main App (hidden until login) ===== */
+        .app-container {
+            display: none;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a5276, #2980b9);
+            color: white;
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.85;
+        }
+
+        .search-area {
+            max-width: 900px;
+            margin: -28px auto 0;
+            padding: 0 16px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .search-row {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .search-input:focus {
+            border-color: #2980b9;
+        }
+
+        .search-input::placeholder {
+            color: #aaa;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .btn-primary {
+            background: #2980b9;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #1a6fa0;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #555;
+        }
+
+        .btn-secondary:hover {
+            background: #ccc;
+        }
+
+        .filter-row {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            color: #666;
+            margin-right: 4px;
+        }
+
+        .dept-tag {
+            display: inline-block;
+            padding: 4px 12px;
+            font-size: 13px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .dept-tag:hover {
+            border-color: #2980b9;
+            color: #2980b9;
+        }
+
+        .dept-tag.active {
+            background: #2980b9;
+            color: white;
+            border-color: #2980b9;
+        }
+
+        .stats {
+            max-width: 900px;
+            margin: 16px auto 0;
+            padding: 0 16px;
+            font-size: 14px;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .results {
+            max-width: 900px;
+            margin: 12px auto 40px;
+            padding: 0 16px;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+
+        .result-card:hover {
+            box-shadow: 0 2px 12px rgba(0,0,0,0.12);
+        }
+
+        .result-header {
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .result-header:hover {
+            background: #f8f9fa;
+        }
+
+        .result-number {
+            background: #2980b9;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .result-dept {
+            background: #e8f4fd;
+            color: #1a5276;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .vip-badge {
+            background: #e74c3c;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .result-title {
+            flex: 1;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #222;
+        }
+
+        .result-title mark {
+            background: #fff3cd;
+            color: #333;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        .result-toggle {
+            flex-shrink: 0;
+            font-size: 18px;
+            color: #aaa;
+            transition: transform 0.3s;
+            margin-top: 2px;
+        }
+
+        .result-card.open .result-toggle {
+            transform: rotate(180deg);
+        }
+
+        .result-content {
+            display: none;
+            padding: 0 20px 20px;
+            border-top: 1px solid #eee;
+            margin: 0 20px;
+        }
+
+        .result-card.open .result-content {
+            display: block;
+        }
+
+        /* === Rich content styles === */
+        .result-content-body {
+            font-size: 14px;
+            line-height: 1.9;
+            color: #333;
+            margin-top: 16px;
+        }
+
+        .result-content-body .qa-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a5276;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2980b9;
+        }
+
+        .result-content-body .qa-line {
+            margin: 4px 0;
+            text-align: justify;
+        }
+
+        .result-content-body .indent-1 { padding-left: 2em; }
+        .result-content-body .indent-2 { padding-left: 4em; }
+        .result-content-body .indent-3 { padding-left: 6em; }
+        .result-content-body .b { font-weight: 700; }
+        .result-content-body .red { color: #d32f2f; }
+        .result-content-body .blue { color: #1565c0; }
+        .result-content-body .u { text-decoration: underline; text-underline-offset: 3px; }
+
+        .result-content-body .qa-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 12px 0;
+            font-size: 13px;
+        }
+
+        .result-content-body .qa-table th,
+        .result-content-body .qa-table td {
+            border: 1px solid #ccc;
+            padding: 8px 10px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .result-content-body .qa-table th {
+            background: #e8f4fd;
+            font-weight: 700;
+            color: #1a5276;
+        }
+
+        .result-content-body .qa-table tr:nth-child(even) {
+            background: #fafafa;
+        }
+
+        .result-content-body mark {
+            background: #fff3cd;
+            color: inherit;
+            padding: 0 2px;
+            border-radius: 2px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
+        .no-results .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .keyboard-hint {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 600px) {
+            .header h1 { font-size: 20px; }
+            .search-row { flex-direction: column; }
+            .btn { width: 100%; }
+            .result-header { padding: 12px 14px; }
+            .result-content { margin: 0 14px; padding: 0 14px 14px; }
+            .result-content-body .indent-1 { padding-left: 1em; }
+            .result-content-body .indent-2 { padding-left: 2em; }
+            .result-content-body .indent-3 { padding-left: 3em; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Login Screen ===== -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="login-icon">&#128274;</div>
+            <h2>模擬問答搜尋系統</h2>
+            <div class="login-subtitle">新北市政府教育局</div>
+            <input type="password" id="passwordInput" placeholder="請輸入密碼" autocomplete="off">
+            <button class="login-btn" id="loginBtn" onclick="doLogin()">登入</button>
+            <div class="login-error" id="loginError">密碼錯誤，請重新輸入</div>
+        </div>
+    </div>
+
+    <!-- ===== Main App ===== -->
+    <div class="app-container" id="appContainer">
+        <div class="header">
+            <h1>4-7 模擬問答搜尋系統</h1>
+            <div class="subtitle">新北市政府教育局 府會聯絡</div>
+        </div>
+
+        <div class="search-area">
+            <div class="search-box">
+                <div class="search-row">
+                    <input type="text" class="search-input" id="searchInput"
+                        placeholder="輸入關鍵字搜尋（如：雙語、霸凌、議員姓名...）"
+                        autocomplete="off">
+                    <button class="btn btn-primary" onclick="doSearch()">搜尋</button>
+                    <button class="btn btn-secondary" onclick="clearSearch()">清除</button>
+                </div>
+                <div class="filter-row" id="filterRow">
+                    <span class="filter-label">科室篩選：</span>
+                </div>
+                <div class="keyboard-hint">按 Enter 搜尋 ｜ 可輸入多個關鍵字，以空格分隔</div>
+            </div>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <div class="results" id="results"></div>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        // ===== Decryption Logic (AES-GCM + PBKDF2, matches Python encryption) =====
+        let QA_DATA = [];
+
+        async function deriveKey(password, salt) {
+            const enc = new TextEncoder();
+            const keyMaterial = await crypto.subtle.importKey(
+                'raw', enc.encode(password), 'PBKDF2', false, ['deriveBits', 'deriveKey']
+            );
+            return crypto.subtle.deriveKey(
+                { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
+                keyMaterial,
+                { name: 'AES-GCM', length: 256 },
+                false,
+                ['decrypt']
+            );
+        }
+
+        function base64ToBuffer(b64) {
+            const binary = atob(b64);
+            const bytes = new Uint8Array(binary.length);
+            for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+            return bytes;
+        }
+
+        async function decryptData(password) {
+            const salt = base64ToBuffer(ENCRYPTED_DATA.salt);
+            const iv = base64ToBuffer(ENCRYPTED_DATA.iv);
+            const ciphertext = base64ToBuffer(ENCRYPTED_DATA.data);
+
+            const key = await deriveKey(password, salt);
+            const decrypted = await crypto.subtle.decrypt(
+                { name: 'AES-GCM', iv: iv },
+                key,
+                ciphertext
+            );
+
+            const jsonStr = new TextDecoder().decode(decrypted);
+            return JSON.parse(jsonStr);
+        }
+
+        // ===== Login =====
+        async function doLogin() {
+            const btn = document.getElementById('loginBtn');
+            const errorEl = document.getElementById('loginError');
+            const pw = document.getElementById('passwordInput').value;
+
+            if (!pw) return;
+
+            btn.disabled = true;
+            btn.textContent = '驗證中...';
+            errorEl.classList.remove('show');
+
+            try {
+                QA_DATA = await decryptData(pw);
+
+                // Success - show app
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('appContainer').style.display = 'block';
+                initApp();
+            } catch (e) {
+                errorEl.classList.add('show');
+                btn.disabled = false;
+                btn.textContent = '登入';
+                document.getElementById('passwordInput').value = '';
+                document.getElementById('passwordInput').focus();
+            }
+        }
+
+        // Enter key on password field
+        document.getElementById('passwordInput').addEventListener('keydown', e => {
+            if (e.key === 'Enter') doLogin();
+        });
+
+        // Auto-focus password input
+        document.getElementById('passwordInput').focus();
+
+        // ===== Search App (same as local version) =====
+        // 高關懷議員名單（搜尋結果置頂加權）
+        const VIP_LEGISLATORS = ['黃淑君','戴瑋姗','石一佑','卓冠廷','李宇翔','陳乃瑜','民進黨團','陳世軒'];
+
+        function countVipMatches(item) {
+            const text = item.title + ' ' + item.plain + ' ' + item.filename;
+            return VIP_LEGISLATORS.filter(name => text.includes(name)).length;
+        }
+
+        let activeDept = '';
+        let currentResults = [];
+        let currentKeywords = [];
+
+        function initApp() {
+            buildDeptFilter();
+            showAllResults();
+            document.getElementById('searchInput').addEventListener('keydown', e => {
+                if (e.key === 'Enter') doSearch();
+            });
+            document.getElementById('searchInput').focus();
+        }
+
+        function buildDeptFilter() {
+            const depts = {};
+            QA_DATA.forEach(item => {
+                const key = item.dept || item.dept_code;
+                if (key) depts[key] = (depts[key] || 0) + 1;
+            });
+
+            const row = document.getElementById('filterRow');
+            const allTag = createDeptTag('全部', QA_DATA.length, '');
+            allTag.classList.add('active');
+            row.appendChild(allTag);
+
+            const sorted = Object.entries(depts).sort((a, b) => b[1] - a[1]);
+            sorted.forEach(([dept, count]) => {
+                row.appendChild(createDeptTag(dept, count, dept));
+            });
+        }
+
+        function createDeptTag(label, count, value) {
+            const tag = document.createElement('span');
+            tag.className = 'dept-tag';
+            tag.textContent = `${label} (${count})`;
+            tag.dataset.dept = value;
+            tag.onclick = () => {
+                document.querySelectorAll('.dept-tag').forEach(t => t.classList.remove('active'));
+                tag.classList.add('active');
+                activeDept = value;
+                doSearch();
+            };
+            return tag;
+        }
+
+        function doSearch() {
+            const query = document.getElementById('searchInput').value.trim();
+            const keywords = query ? query.split(/\s+/).filter(k => k) : [];
+
+            let results = QA_DATA;
+
+            if (activeDept) {
+                results = results.filter(item =>
+                    item.dept === activeDept || item.dept_code === activeDept
+                );
+            }
+
+            if (keywords.length > 0) {
+                results = results.filter(item => {
+                    const text = (item.title + ' ' + item.plain + ' ' + item.dept + ' ' + item.filename).toLowerCase();
+                    return keywords.every(kw => text.includes(kw.toLowerCase()));
+                });
+            }
+
+            // 高關懷議員置頂：有 VIP 的排前面，VIP 數量多的更前面
+            results.sort((a, b) => countVipMatches(b) - countVipMatches(a));
+
+            currentResults = results;
+            renderResults(results, keywords);
+        }
+
+        function showAllResults() {
+            currentResults = QA_DATA;
+            renderResults(QA_DATA, []);
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            activeDept = '';
+            document.querySelectorAll('.dept-tag').forEach(t => t.classList.remove('active'));
+            document.querySelector('.dept-tag').classList.add('active');
+            showAllResults();
+            document.getElementById('searchInput').focus();
+        }
+
+        function escapeHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        function escapeRegex(str) {
+            return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function highlightPlainText(text, keywords) {
+            if (!keywords.length) return escapeHtml(text);
+            let result = escapeHtml(text);
+            keywords.forEach(kw => {
+                const escaped = escapeRegex(escapeHtml(kw));
+                const regex = new RegExp(`(${escaped})`, 'gi');
+                result = result.replace(regex, '<mark>$1</mark>');
+            });
+            return result;
+        }
+
+        function highlightRichHtml(html, keywords) {
+            if (!keywords.length || !html) return html;
+            let result = html.replace(/(?<=>)([^<]+)(?=<)/g, (textNode) => {
+                let highlighted = textNode;
+                keywords.forEach(kw => {
+                    const escaped = escapeRegex(kw);
+                    highlighted = highlighted.replace(
+                        new RegExp(`(${escaped})`, 'gi'),
+                        '<mark>$1</mark>'
+                    );
+                });
+                return highlighted;
+            });
+            if (!html.startsWith('<')) {
+                const firstTagIdx = html.indexOf('<');
+                if (firstTagIdx > 0) {
+                    let leadText = result.substring(0, firstTagIdx);
+                    keywords.forEach(kw => {
+                        const escaped = escapeRegex(kw);
+                        leadText = leadText.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+                    });
+                    result = leadText + result.substring(firstTagIdx);
+                }
+            }
+            return result;
+        }
+
+        function renderResults(results, keywords) {
+            const container = document.getElementById('results');
+            const stats = document.getElementById('stats');
+            currentKeywords = keywords;
+
+            stats.textContent = `共找到 ${results.length} 筆資料` +
+                (results.length !== QA_DATA.length ? ` / 全部 ${QA_DATA.length} 筆` : '');
+
+            if (results.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results">
+                        <div class="icon">&#128269;</div>
+                        <div>找不到符合的資料，請嘗試其他關鍵字</div>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = results.map(item => `
+                <div class="result-card" id="card-${item.id}" data-item-id="${item.id}">
+                    <div class="result-header" onclick="toggleCard(${item.id})">
+                        <span class="result-number">${item.number}</span>
+                        <span class="result-dept">${escapeHtml(item.dept || item.dept_code)}</span>
+                        ${countVipMatches(item) > 0 ? '<span class="vip-badge">\u2605 \u9ad8\u95dc\u61f7</span>' : ''}
+                        <span class="result-title">${highlightPlainText(item.title, keywords)}</span>
+                        <span class="result-toggle">&#9660;</span>
+                    </div>
+                    <div class="result-content">
+                        <div class="result-content-body" id="body-${item.id}"></div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleCard(id) {
+            const card = document.getElementById(`card-${id}`);
+            const body = document.getElementById(`body-${id}`);
+
+            if (!body.dataset.loaded) {
+                const item = QA_DATA.find(d => d.id === id);
+                if (item) {
+                    const titleHtml = item.title_html
+                        ? highlightRichHtml(item.title_html, currentKeywords)
+                        : '';
+                    const contentHtml = item.content_html
+                        ? highlightRichHtml(item.content_html, currentKeywords)
+                        : '';
+                    body.innerHTML = titleHtml + contentHtml;
+                    body.dataset.loaded = '1';
+                }
+            }
+
+            card.classList.toggle('open');
+        }
+    </script>
+</body>
+</html>
