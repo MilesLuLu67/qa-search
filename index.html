@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>模擬問答搜尋系統</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: "Microsoft JhengHei", "微軟正黑體", sans-serif;
+            background: #f0f2f5;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* ===== Login Screen ===== */
+        .login-screen {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a5276, #2980b9);
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 16px;
+            padding: 48px 36px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+        }
+
+        .login-box .login-icon { font-size: 48px; margin-bottom: 12px; }
+        .login-box h2 { font-size: 22px; color: #1a5276; margin-bottom: 4px; }
+        .login-box .login-subtitle { font-size: 14px; color: #888; margin-bottom: 28px; }
+
+        .login-box input[type="password"] {
+            width: 100%; padding: 14px 16px; font-size: 16px;
+            border: 2px solid #ddd; border-radius: 10px; outline: none;
+            transition: border-color 0.2s; text-align: center; letter-spacing: 4px;
+        }
+        .login-box input[type="password"]:focus { border-color: #2980b9; }
+
+        .login-box .login-btn {
+            width: 100%; padding: 14px; font-size: 16px; font-weight: 700;
+            color: white; background: linear-gradient(135deg, #1a5276, #2980b9);
+            border: none; border-radius: 10px; cursor: pointer; margin-top: 16px;
+            transition: opacity 0.2s;
+        }
+        .login-box .login-btn:hover { opacity: 0.9; }
+        .login-box .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .login-error { color: #d32f2f; font-size: 14px; margin-top: 12px; display: none; }
+        .login-error.show { display: block; }
+
+        /* ===== Main App (hidden until login) ===== */
+        .app-container { display: none; }
+
+        .header {
+            background: linear-gradient(135deg, #1a5276, #2980b9);
+            color: white; padding: 24px 20px; text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .header h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+        .header .subtitle { font-size: 14px; opacity: 0.85; }
+
+        /* ===== Tab Navigation ===== */
+        .tab-nav {
+            display: flex; justify-content: center; background: white;
+            border-bottom: 2px solid #e0e0e0; box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            position: sticky; top: 0; z-index: 50;
+        }
+        .tab-btn {
+            padding: 14px 32px; font-size: 15px; font-weight: 600; color: #888;
+            border: none; background: none; cursor: pointer;
+            border-bottom: 3px solid transparent; transition: all 0.2s; font-family: inherit;
+        }
+        .tab-btn:hover { color: #2980b9; background: #f0f7fc; }
+        .tab-btn.active { color: #1a5276; border-bottom-color: #2980b9; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* ===== QA styles ===== */
+        .search-area {
+            max-width: 900px; margin: -28px auto 0; padding: 0 16px;
+            position: relative; z-index: 10;
+        }
+        .search-box {
+            background: white; border-radius: 12px; padding: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+        .search-row { display: flex; gap: 10px; align-items: stretch; }
+        .search-input {
+            flex: 1; padding: 12px 16px; font-size: 16px;
+            border: 2px solid #ddd; border-radius: 8px; outline: none;
+            transition: border-color 0.2s; font-family: inherit;
+        }
+        .search-input:focus { border-color: #2980b9; }
+        .search-input::placeholder { color: #aaa; }
+
+        .btn {
+            padding: 12px 24px; font-size: 16px; border: none; border-radius: 8px;
+            cursor: pointer; font-weight: 600; transition: background 0.2s; font-family: inherit;
+        }
+        .btn-primary { background: #2980b9; color: white; }
+        .btn-primary:hover { background: #1a6fa0; }
+        .btn-secondary { background: #e0e0e0; color: #555; }
+        .btn-secondary:hover { background: #ccc; }
+
+        .filter-row { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+        .filter-label { font-size: 14px; color: #666; margin-right: 4px; }
+
+        .dept-tag {
+            display: inline-block; padding: 4px 12px; font-size: 13px;
+            border-radius: 20px; border: 1px solid #ccc; background: white;
+            cursor: pointer; transition: all 0.2s; user-select: none;
+        }
+        .dept-tag:hover { border-color: #2980b9; color: #2980b9; }
+        .dept-tag.active { background: #2980b9; color: white; border-color: #2980b9; }
+
+        .stats { max-width: 900px; margin: 16px auto 0; padding: 0 16px; font-size: 14px; color: #777; }
+        .results { max-width: 900px; margin: 12px auto 40px; padding: 0 16px; }
+
+        .result-card {
+            background: white; border-radius: 10px; margin-bottom: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; transition: box-shadow 0.2s;
+        }
+        .result-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
+
+        .result-header {
+            padding: 16px 20px; cursor: pointer; display: flex; gap: 12px; align-items: flex-start;
+        }
+        .result-header:hover { background: #f8f9fa; }
+
+        .result-number {
+            background: #2980b9; color: white; font-size: 12px; font-weight: 700;
+            padding: 4px 10px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+        }
+        .result-dept {
+            background: #e8f4fd; color: #1a5276; font-size: 12px; font-weight: 600;
+            padding: 4px 10px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+        }
+        .vip-badge {
+            background: #e74c3c; color: white; font-size: 11px; font-weight: 700;
+            padding: 3px 8px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+        }
+        .result-title { flex: 1; font-size: 15px; line-height: 1.5; color: #222; }
+        .result-title mark { background: #fff3cd; color: #333; padding: 0 2px; border-radius: 2px; }
+        .result-toggle { flex-shrink: 0; font-size: 18px; color: #aaa; transition: transform 0.3s; margin-top: 2px; }
+        .result-card.open .result-toggle { transform: rotate(180deg); }
+
+        .result-content { display: none; padding: 0 20px 20px; border-top: 1px solid #eee; margin: 0 20px; }
+        .result-card.open .result-content { display: block; }
+
+        .result-content-body { font-size: 14px; line-height: 1.9; color: #333; margin-top: 16px; }
+        .result-content-body .qa-title {
+            font-size: 16px; font-weight: 700; color: #1a5276;
+            margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid #2980b9;
+        }
+        .result-content-body .qa-line { margin: 4px 0; text-align: justify; }
+        .result-content-body .indent-1 { padding-left: 2em; }
+        .result-content-body .indent-2 { padding-left: 4em; }
+        .result-content-body .indent-3 { padding-left: 6em; }
+        .result-content-body .b { font-weight: 700; }
+        .result-content-body .red { color: #d32f2f; }
+        .result-content-body .blue { color: #1565c0; }
+        .result-content-body .u { text-decoration: underline; text-underline-offset: 3px; }
+
+        .result-content-body .qa-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+        .result-content-body .qa-table th,
+        .result-content-body .qa-table td { border: 1px solid #ccc; padding: 8px 10px; text-align: left; vertical-align: top; }
+        .result-content-body .qa-table th { background: #e8f4fd; font-weight: 700; color: #1a5276; }
+        .result-content-body .qa-table tr:nth-child(even) { background: #fafafa; }
+        .result-content-body mark { background: #fff3cd; color: inherit; padding: 0 2px; border-radius: 2px; }
+
+        .loading { text-align: center; padding: 60px 20px; color: #999; }
+        .keyboard-hint { font-size: 12px; color: #aaa; margin-top: 8px; }
+        .no-results { text-align: center; padding: 60px 20px; color: #999; }
+        .no-results .icon { font-size: 48px; margin-bottom: 16px; }
+
+        /* ===== Perf Dashboard styles ===== */
+        .perf-area { max-width: 960px; margin: 24px auto 40px; padding: 0 16px; }
+        .perf-search { max-width: 960px; margin: 20px auto 0; padding: 0 16px; }
+        .perf-search-box {
+            background: white; border-radius: 12px; padding: 16px 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1); display: flex; gap: 10px;
+        }
+        .perf-search-box input {
+            flex: 1; padding: 10px 14px; font-size: 15px;
+            border: 2px solid #ddd; border-radius: 8px; outline: none; font-family: inherit;
+        }
+        .perf-search-box input:focus { border-color: #2980b9; }
+
+        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
+        .kpi-card {
+            background: white; border-radius: 10px; padding: 18px 16px; text-align: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06); border-top: 4px solid #2980b9;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .kpi-card:nth-child(2) { border-top-color: #27ae60; }
+        .kpi-card:nth-child(3) { border-top-color: #f39c12; }
+        .kpi-card:nth-child(4) { border-top-color: #8e44ad; }
+        .kpi-value { font-size: 28px; font-weight: 800; color: #1a5276; }
+        .kpi-card:nth-child(2) .kpi-value { color: #27ae60; }
+        .kpi-card:nth-child(3) .kpi-value { color: #f39c12; }
+        .kpi-card:nth-child(4) .kpi-value { color: #8e44ad; }
+        .kpi-label { font-size: 13px; color: #888; margin-top: 4px; }
+
+        .perf-card {
+            background: white; border-radius: 10px; margin-bottom: 14px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; transition: box-shadow 0.2s;
+        }
+        .perf-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
+        .perf-header { padding: 16px 20px; cursor: pointer; display: flex; gap: 12px; align-items: center; }
+        .perf-header:hover { background: #f8f9fa; }
+        .perf-icon { font-size: 22px; flex-shrink: 0; }
+        .perf-title { flex: 1; font-size: 16px; font-weight: 700; color: #1a5276; }
+        .perf-dept-badge {
+            background: #e8f4fd; color: #1a5276; font-size: 12px; font-weight: 600;
+            padding: 4px 12px; border-radius: 6px; white-space: nowrap; flex-shrink: 0;
+        }
+        .perf-toggle { font-size: 18px; color: #aaa; transition: transform 0.3s; flex-shrink: 0; }
+        .perf-card.open .perf-toggle { transform: rotate(180deg); }
+        .perf-body { display: none; padding: 0 20px 24px; border-top: 1px solid #eee; margin: 0 20px; }
+        .perf-card.open .perf-body { display: block; }
+
+        .chart-container { position: relative; width: 100%; max-height: 340px; }
+        .chart-container canvas { max-height: 340px; }
+
+        .related-qa { margin-top: 20px; padding: 14px 18px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e0e0e0; }
+        .related-qa-title { font-size: 13px; font-weight: 700; color: #888; margin-bottom: 8px; }
+        .related-qa-link { display: block; font-size: 13px; color: #2980b9; padding: 5px 0; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+        .related-qa-link:hover { text-decoration: underline; }
+        .related-qa-link:last-child { border-bottom: none; }
+
+        .dept-divider { text-align:center; margin:28px 0 14px; position:relative; }
+        .dept-divider::before { content:''; position:absolute; left:0; top:50%; width:100%; height:1px; background:linear-gradient(to right,transparent,#ccc,transparent); }
+        .dept-divider span { position:relative; background:#f0f2f5; padding:0 16px; font-size:14px; font-weight:700; color:#1a5276; }
+
+        .inner-kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin:16px 0; }
+        .inner-kpi { background:#f8f9fa; border-radius:8px; padding:14px 12px; text-align:center; border-top:3px solid #2980b9; }
+        .inner-kpi-value { font-size:22px; font-weight:800; }
+        .inner-kpi-label { font-size:12px; color:#888; margin-top:2px; }
+
+        .perf-text-content { margin-top:16px; max-height:400px; overflow-y:auto; padding-right:8px; }
+        .perf-text-content p { font-size:13px; line-height:1.7; color:#444; margin-bottom:4px; }
+
+        @media (max-width: 600px) {
+            .header h1 { font-size: 20px; }
+            .search-row { flex-direction: column; }
+            .btn { width: 100%; }
+            .tab-btn { padding: 12px 16px; font-size: 14px; }
+            .kpi-row { grid-template-columns: repeat(2, 1fr); }
+            .inner-kpi-row { grid-template-columns: repeat(2, 1fr); }
+            .result-header { padding: 12px 14px; }
+            .result-content { margin: 0 14px; padding: 0 14px 14px; }
+            .result-content-body .indent-1 { padding-left: 1em; }
+            .result-content-body .indent-2 { padding-left: 2em; }
+            .result-content-body .indent-3 { padding-left: 3em; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== Login Screen ===== -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-box">
+            <div class="login-icon">&#128274;</div>
+            <h2>模擬問答搜尋系統</h2>
+            <div class="login-subtitle">新北市政府教育局</div>
+            <input type="password" id="passwordInput" placeholder="請輸入密碼" autocomplete="off">
+            <button class="login-btn" id="loginBtn" onclick="doLogin()">登入</button>
+            <div class="login-error" id="loginError">密碼錯誤，請重新輸入</div>
+        </div>
+    </div>
+
+    <!-- ===== Main App ===== -->
+    <div class="app-container" id="appContainer">
+        <div class="header">
+            <h1>4-7 模擬問答搜尋系統</h1>
+            <div class="subtitle">新北市政府教育局 府會聯絡</div>
+        </div>
+
+        <!-- Tab nav -->
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchTab('qa')">模擬問答查詢</button>
+            <button class="tab-btn" onclick="switchTab('perf')">重要績效儀表板</button>
+        </div>
+
+        <!-- QA Tab -->
+        <div class="tab-content active" id="tab-qa">
+            <div style="height:28px;"></div>
+            <div class="search-area">
+                <div class="search-box">
+                    <div class="search-row">
+                        <input type="text" class="search-input" id="searchInput"
+                            placeholder="輸入關鍵字搜尋（如：雙語、霸凌、議員姓名...）"
+                            autocomplete="off">
+                        <button class="btn btn-primary" onclick="doSearch()">搜尋</button>
+                        <button class="btn btn-secondary" onclick="clearSearch()">清除</button>
+                    </div>
+                    <div class="filter-row" id="filterRow">
+                        <span class="filter-label">科室篩選：</span>
+                    </div>
+                    <div class="keyboard-hint">按 Enter 搜尋 ｜ 可輸入多個關鍵字，以空格分隔</div>
+                </div>
+            </div>
+
+            <div class="stats" id="stats"></div>
+            <div class="results" id="results">
+                <div class="loading" id="loading">載入資料中...</div>
+            </div>
+        </div>
+
+        <!-- Performance Dashboard Tab -->
+        <div class="tab-content" id="tab-perf">
+            <div class="perf-search">
+                <div class="perf-search-box">
+                    <input type="text" id="perfSearchInput"
+                        placeholder="搜尋績效資料（如：雙語、投資、幼兒園...）"
+                        oninput="filterPerf()">
+                    <button class="btn btn-primary" onclick="filterPerf()">搜尋</button>
+                </div>
+            </div>
+            <div class="perf-area" id="perfArea"></div>
+        </div>
+    </div>
+
+<script src="data.js"></script>
+<script src="perf_data.js"></script>
+<script>
+// ===== Decryption Logic (AES-GCM + PBKDF2) =====
+let QA_DATA = [];
+let PERF_DATA = [];
+
+async function deriveKey(password, salt) {
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+        'raw', enc.encode(password), 'PBKDF2', false, ['deriveBits', 'deriveKey']
+    );
+    return crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
+        keyMaterial,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['decrypt']
+    );
+}
+
+function base64ToBuffer(b64) {
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return bytes;
+}
+
+async function decryptEncObj(encObj, password) {
+    const salt = base64ToBuffer(encObj.salt);
+    const iv = base64ToBuffer(encObj.iv);
+    const ciphertext = base64ToBuffer(encObj.data);
+    const key = await deriveKey(password, salt);
+    const decrypted = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: iv }, key, ciphertext
+    );
+    return JSON.parse(new TextDecoder().decode(decrypted));
+}
+
+// ===== Login =====
+async function doLogin() {
+    const btn = document.getElementById('loginBtn');
+    const errorEl = document.getElementById('loginError');
+    const pw = document.getElementById('passwordInput').value;
+    if (!pw) return;
+
+    btn.disabled = true;
+    btn.textContent = '驗證中...';
+    errorEl.classList.remove('show');
+
+    try {
+        // Decrypt QA data (required)
+        QA_DATA = await decryptEncObj(ENCRYPTED_DATA, pw);
+
+        // Decrypt Perf data (optional - may not exist)
+        if (typeof ENCRYPTED_PERF_DATA !== 'undefined') {
+            PERF_DATA = await decryptEncObj(ENCRYPTED_PERF_DATA, pw);
+        }
+
+        // Success - show app
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('appContainer').style.display = 'block';
+        initApp();
+    } catch (e) {
+        errorEl.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = '登入';
+        document.getElementById('passwordInput').value = '';
+        document.getElementById('passwordInput').focus();
+    }
+}
+
+document.getElementById('passwordInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+});
+document.getElementById('passwordInput').focus();
+
+// ===== VIP Legislators =====
+const VIP_LEGISLATORS = ['黃淑君','戴瑋姗','石一佑','卓冠廷','李宇翔','陳乃瑜','民進黨團','陳世軒'];
+
+function countVipMatches(item) {
+    const text = item.title + ' ' + item.plain + ' ' + (item.filename||'');
+    return VIP_LEGISLATORS.filter(name => text.includes(name)).length;
+}
+
+// ===== State =====
+let activeDept = '';
+let currentKeywords = [];
+
+// ===== Init =====
+function initApp() {
+    buildDeptFilter();
+    showAllResults();
+    document.getElementById('searchInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') doSearch();
+    });
+    document.getElementById('perfSearchInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') filterPerf();
+    });
+    document.getElementById('searchInput').focus();
+    document.getElementById('loading').style.display = 'none';
+    renderPerfDashboard();
+}
+
+// ===== Tab =====
+function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    if (tab === 'qa') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('tab-qa').classList.add('active');
+    } else {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('tab-perf').classList.add('active');
+        setTimeout(initVisibleCharts, 100);
+    }
+}
+
+// ===== QA Functions =====
+function buildDeptFilter() {
+    const depts = {};
+    QA_DATA.forEach(item => {
+        const key = item.dept || item.dept_code;
+        if (key) depts[key] = (depts[key] || 0) + 1;
+    });
+    const row = document.getElementById('filterRow');
+    const allTag = createDeptTag('全部', QA_DATA.length, '');
+    allTag.classList.add('active');
+    row.appendChild(allTag);
+    const sorted = Object.entries(depts).sort((a, b) => b[1] - a[1]);
+    sorted.forEach(([dept, count]) => {
+        row.appendChild(createDeptTag(dept, count, dept));
+    });
+}
+
+function createDeptTag(label, count, value) {
+    const tag = document.createElement('span');
+    tag.className = 'dept-tag';
+    tag.textContent = `${label} (${count})`;
+    tag.dataset.dept = value;
+    tag.onclick = () => {
+        document.querySelectorAll('.dept-tag').forEach(t => t.classList.remove('active'));
+        tag.classList.add('active');
+        activeDept = value;
+        doSearch();
+    };
+    return tag;
+}
+
+function doSearch() {
+    const query = document.getElementById('searchInput').value.trim();
+    const keywords = query ? query.split(/\s+/).filter(k => k) : [];
+    let results = QA_DATA;
+    if (activeDept) {
+        results = results.filter(item =>
+            item.dept === activeDept || item.dept_code === activeDept
+        );
+    }
+    if (keywords.length > 0) {
+        results = results.filter(item => {
+            const text = (item.title + ' ' + item.plain + ' ' + item.dept + ' ' + item.filename).toLowerCase();
+            return keywords.every(kw => text.includes(kw.toLowerCase()));
+        });
+    }
+    results.sort((a, b) => countVipMatches(b) - countVipMatches(a));
+    currentKeywords = keywords;
+    renderResults(results, keywords);
+}
+
+function showAllResults() {
+    currentKeywords = [];
+    renderResults(QA_DATA, []);
+}
+
+function clearSearch() {
+    document.getElementById('searchInput').value = '';
+    activeDept = '';
+    document.querySelectorAll('.dept-tag').forEach(t => t.classList.remove('active'));
+    document.querySelector('.dept-tag').classList.add('active');
+    showAllResults();
+    document.getElementById('searchInput').focus();
+}
+
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
+function escapeRegex(str) {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+function highlightPlainText(text, keywords) {
+    if (!keywords.length) return escapeHtml(text);
+    let result = escapeHtml(text);
+    keywords.forEach(kw => {
+        const escaped = escapeRegex(escapeHtml(kw));
+        const regex = new RegExp(`(${escaped})`, 'gi');
+        result = result.replace(regex, '<mark>$1</mark>');
+    });
+    return result;
+}
+
+function highlightRichHtml(html, keywords) {
+    if (!keywords.length || !html) return html;
+    let result = html;
+    result = html.replace(/(?<=>)([^<]+)(?=<)/g, (textNode) => {
+        let highlighted = textNode;
+        keywords.forEach(kw => {
+            const escaped = escapeRegex(kw);
+            highlighted = highlighted.replace(
+                new RegExp(`(${escaped})`, 'gi'),
+                '<mark>$1</mark>'
+            );
+        });
+        return highlighted;
+    });
+    if (!html.startsWith('<')) {
+        const firstTagIdx = html.indexOf('<');
+        if (firstTagIdx > 0) {
+            let leadText = result.substring(0, firstTagIdx);
+            keywords.forEach(kw => {
+                const escaped = escapeRegex(kw);
+                leadText = leadText.replace(new RegExp(`(${escaped})`, 'gi'), '<mark>$1</mark>');
+            });
+            result = leadText + result.substring(firstTagIdx);
+        }
+    }
+    return result;
+}
+
+function renderResults(results, keywords) {
+    const container = document.getElementById('results');
+    const stats = document.getElementById('stats');
+    stats.textContent = `共找到 ${results.length} 筆資料` +
+        (results.length !== QA_DATA.length ? ` / 全部 ${QA_DATA.length} 筆` : '');
+    if (results.length === 0) {
+        container.innerHTML = '<div class="no-results"><div class="icon">&#128269;</div><div>找不到符合的資料，請嘗試其他關鍵字</div></div>';
+        return;
+    }
+    container.innerHTML = results.map(item => `
+        <div class="result-card" id="card-${item.id}" data-item-id="${item.id}">
+            <div class="result-header" onclick="toggleCard(${item.id})">
+                <span class="result-number">${item.number}</span>
+                <span class="result-dept">${escapeHtml(item.dept || item.dept_code)}</span>
+                ${countVipMatches(item) > 0 ? '<span class="vip-badge">\u2605 \u9ad8\u95dc\u61f7</span>' : ''}
+                <span class="result-title">${highlightPlainText(item.title, keywords)}</span>
+                <span class="result-toggle">&#9660;</span>
+            </div>
+            <div class="result-content">
+                <div class="result-content-body" id="body-${item.id}"></div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function toggleCard(id) {
+    const card = document.getElementById(`card-${id}`);
+    const body = document.getElementById(`body-${id}`);
+    if (!body.dataset.loaded) {
+        const item = QA_DATA.find(d => d.id === id);
+        if (item) {
+            const titleHtml = item.title_html
+                ? highlightRichHtml(item.title_html, currentKeywords) : '';
+            const contentHtml = item.content_html
+                ? highlightRichHtml(item.content_html, currentKeywords) : '';
+            body.innerHTML = titleHtml + contentHtml;
+            body.dataset.loaded = '1';
+        }
+    }
+    card.classList.toggle('open');
+}
+
+// ===== Perf search =====
+function filterPerf() {
+    const query = document.getElementById('perfSearchInput').value.trim();
+    document.querySelectorAll('.perf-card').forEach(card => {
+        if (!query) { card.style.display = ''; return; }
+        const text = card.textContent + ' ' + (card.dataset.keywords||'');
+        card.style.display = text.includes(query) ? '' : 'none';
+    });
+    document.querySelectorAll('.dept-divider').forEach(div => {
+        if (!query) { div.style.display = ''; return; }
+        let next = div.nextElementSibling;
+        let anyVisible = false;
+        while (next && !next.classList.contains('dept-divider')) {
+            if (next.classList.contains('perf-card') && next.style.display !== 'none') {
+                anyVisible = true;
+            }
+            next = next.nextElementSibling;
+        }
+        div.style.display = anyVisible ? '' : 'none';
+    });
+}
+
+// ===== Perf toggle with lazy chart init =====
+function togglePerf(header) {
+    const card = header.closest('.perf-card');
+    card.classList.toggle('open');
+    if (card.classList.contains('open')) {
+        setTimeout(() => initChartsInCard(card), 50);
+    }
+}
+
+// ===== Jump to QA =====
+function jumpToQA(keyword) {
+    switchTab('qa');
+    document.getElementById('searchInput').value = keyword;
+    doSearch();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ===== Dynamic Perf Rendering =====
+function renderPerfDashboard() {
+    if (!PERF_DATA || PERF_DATA.length === 0) return;
+    const area = document.getElementById('perfArea');
+    if (!area) return;
+
+    const deptOrder = [];
+    const deptSections = {};
+    PERF_DATA.forEach(s => {
+        if (!deptSections[s.dept]) {
+            deptSections[s.dept] = [];
+            deptOrder.push(s.dept);
+        }
+        deptSections[s.dept].push(s);
+    });
+
+    let html = '';
+    html += '<div class="kpi-row">';
+    html += '<div class="kpi-card"><div class="kpi-value">100+億</div><div class="kpi-label">108-115 教育總投資</div></div>';
+    html += '<div class="kpi-card"><div class="kpi-value">283所</div><div class="kpi-label">雙語實驗學校</div></div>';
+    html += '<div class="kpi-card"><div class="kpi-value">56,000+</div><div class="kpi-label">平價教保收托人數</div></div>';
+    html += '<div class="kpi-card"><div class="kpi-value">278所</div><div class="kpi-label">圖書館完成改造</div></div>';
+    html += '</div>';
+
+    deptOrder.forEach(dept => {
+        html += `<div class="dept-divider"><span>${dept}</span></div>`;
+        deptSections[dept].forEach(s => {
+            html += `<div class="perf-card" data-keywords="${escapeHtml(s.keywords)}" data-num="${s.num}">`;
+            html += `<div class="perf-header" onclick="togglePerf(this)">`;
+            html += `<span class="perf-icon">${s.icon}</span>`;
+            html += `<span class="perf-title">${escapeHtml(s.title)}</span>`;
+            html += `<span class="perf-dept-badge">${escapeHtml(s.dept)}</span>`;
+            html += `<span class="perf-toggle">▼</span>`;
+            html += `</div>`;
+            html += `<div class="perf-body">`;
+
+            if (s.kpis && s.kpis.length > 0) {
+                html += '<div class="inner-kpi-row">';
+                s.kpis.forEach(kpi => {
+                    html += `<div class="inner-kpi" style="border-top-color:${kpi.color}">`;
+                    html += `<div class="inner-kpi-value" style="color:${kpi.color}">${escapeHtml(kpi.value)}</div>`;
+                    html += `<div class="inner-kpi-label">${escapeHtml(kpi.label)}</div>`;
+                    html += `</div>`;
+                });
+                html += '</div>';
+            }
+
+            if (s.charts && s.charts.length > 0) {
+                s.charts.forEach(chart => {
+                    html += `<div class="chart-container"><canvas id="${chart.id}"></canvas></div>`;
+                });
+            }
+
+            if (s.text) {
+                html += '<div class="perf-text-content">';
+                s.text.split('\n').forEach(line => {
+                    if (line.trim()) html += `<p>${escapeHtml(line.trim())}</p>`;
+                });
+                html += '</div>';
+            }
+
+            if (s.relatedQA && s.relatedQA.length > 0) {
+                html += '<div class="related-qa">';
+                html += '<div class="related-qa-title">&#128279; 相關模擬問答</div>';
+                s.relatedQA.forEach(qa => {
+                    html += `<a class="related-qa-link" href="#" onclick="jumpToQA('${escapeHtml(qa.keyword)}')">${escapeHtml(qa.text)}</a>`;
+                });
+                html += '</div>';
+            }
+
+            html += '</div></div>';
+        });
+    });
+
+    area.innerHTML = html;
+    initVisibleCharts();
+}
+
+function initVisibleCharts() {
+    if (!PERF_DATA || PERF_DATA.length === 0) return;
+    document.querySelectorAll('.perf-card.open').forEach(card => {
+        initChartsInCard(card);
+    });
+}
+
+function initChartsInCard(card) {
+    if (card.dataset.chartsInitialized) return;
+    const num = card.dataset.num;
+    const section = PERF_DATA.find(s => s.num === num);
+    if (!section || !section.charts) return;
+
+    section.charts.forEach(chartDef => {
+        const canvas = document.getElementById(chartDef.id);
+        if (!canvas) return;
+
+        const datasets = chartDef.datasets.map(ds => {
+            const d = {...ds};
+            if (chartDef.type === 'line') { d.tension = 0.3; d.pointRadius = 5; }
+            if (chartDef.type === 'bar') { d.borderRadius = 5; }
+            return d;
+        });
+
+        const options = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                title: { display: true, text: chartDef.title, font: { size: 14, weight: 'bold' } },
+                legend: { display: chartDef.datasets.length > 1 || chartDef.type === 'doughnut' }
+            }
+        };
+
+        if (chartDef.type !== 'doughnut') {
+            options.scales = { y: { beginAtZero: !(chartDef.yMin) } };
+            if (chartDef.yMin !== undefined) options.scales.y.min = chartDef.yMin;
+            if (chartDef.yMax !== undefined) options.scales.y.max = chartDef.yMax;
+        }
+
+        if (chartDef.type === 'doughnut') {
+            options.plugins.legend = { position: 'bottom', labels: { font: { size: 11 } } };
+        }
+
+        if (chartDef.dualAxis) {
+            options.scales = {
+                y: { type: 'linear', display: true, position: 'left', title: { display: true, text: '園數' } },
+                y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false }, title: { display: true, text: '收托數' } }
+            };
+        }
+
+        new Chart(canvas, {
+            type: chartDef.type,
+            data: { labels: chartDef.labels, datasets: datasets },
+            options: options
+        });
+    });
+
+    card.dataset.chartsInitialized = '1';
+}
+</script>
+</body>
+</html>
