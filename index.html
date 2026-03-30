@@ -384,23 +384,29 @@ async function doLogin() {
     try {
         // Decrypt QA data (required)
         QA_DATA = await decryptEncObj(ENCRYPTED_DATA, pw);
-
-        // Decrypt Perf data (optional - may not exist)
-        if (typeof ENCRYPTED_PERF_DATA !== 'undefined') {
-            PERF_DATA = await decryptEncObj(ENCRYPTED_PERF_DATA, pw);
-        }
-
-        // Success - show app
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('appContainer').style.display = 'block';
-        initApp();
     } catch (e) {
         errorEl.classList.add('show');
         btn.disabled = false;
         btn.textContent = '登入';
         document.getElementById('passwordInput').value = '';
         document.getElementById('passwordInput').focus();
+        return;
     }
+
+    // Decrypt Perf data (independent - failure won't block login)
+    try {
+        if (typeof ENCRYPTED_PERF_DATA !== 'undefined') {
+            PERF_DATA = await decryptEncObj(ENCRYPTED_PERF_DATA, pw);
+        }
+    } catch (e) {
+        console.warn('績效資料解密失敗:', e);
+        PERF_DATA = [];
+    }
+
+    // Success - show app
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('appContainer').style.display = 'block';
+    initApp();
 }
 
 document.getElementById('passwordInput').addEventListener('keydown', e => {
