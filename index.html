@@ -1354,7 +1354,7 @@ async function updateData() {
             btn.disabled = false;
         }
     } catch (e) {
-        alert('無法連線到伺服器。\n\n請確認是否透過 server.py 或啟動.bat 開啟網頁。');
+        alert('轉檔連線失敗：' + e.message + '\n\n可能原因：\n1. 請先關閉此頁面，重新用「啟動搜尋系統.bat」開啟\n2. 若 cmd 視窗顯示缺少套件，請先安裝（pip install python-docx openpyxl cryptography）');
         btn.innerHTML = origText;
         btn.disabled = false;
     }
