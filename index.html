@@ -450,11 +450,22 @@ async function doLogin() {
     btn.disabled = true;
     btn.textContent = '驗證中...';
     errorEl.classList.remove('show');
+    errorEl.textContent = '';
+
+    // 檢查資料檔是否載入
+    if (typeof ENCRYPTED_DATA === 'undefined') {
+        errorEl.textContent = '資料檔 data.js 尚未載入，請重新整理頁面再試';
+        errorEl.classList.add('show');
+        btn.disabled = false;
+        btn.textContent = '登入';
+        return;
+    }
 
     try {
-        // Decrypt QA data (required)
+        btn.textContent = '解密模擬問答資料中...';
         QA_DATA = await decryptEncObj(ENCRYPTED_DATA, pw);
     } catch (e) {
+        errorEl.textContent = '密碼錯誤，請重新輸入';
         errorEl.classList.add('show');
         btn.disabled = false;
         btn.textContent = '登入';
@@ -465,10 +476,9 @@ async function doLogin() {
 
     // Decrypt Perf data (independent - failure won't block login)
     try {
+        btn.textContent = '解密績效資料中...';
         if (typeof ENCRYPTED_PERF_DATA !== 'undefined') {
             PERF_DATA = await decryptEncObj(ENCRYPTED_PERF_DATA, pw);
-        } else {
-            console.warn('ENCRYPTED_PERF_DATA is undefined');
         }
     } catch (e) {
         PERF_DATA = [];
@@ -476,17 +486,18 @@ async function doLogin() {
 
     // Decrypt Stats data (independent - failure won't block login)
     try {
+        btn.textContent = '解密統計資料中...';
         if (typeof ENCRYPTED_STATS_DATA !== 'undefined') {
             const statsRaw = await decryptEncObj(ENCRYPTED_STATS_DATA, pw);
             STATS_UPDATE_DATE = statsRaw.update_date;
             STATS_SECTIONS = statsRaw.sections;
         }
     } catch (e) {
-        console.warn('Stats data decryption failed', e);
         STATS_SECTIONS = [];
     }
 
     // Success - show app
+    btn.textContent = '載入完成！';
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('appContainer').style.display = 'block';
     initApp();
