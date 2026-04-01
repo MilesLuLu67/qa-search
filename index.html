@@ -15,152 +15,259 @@
             min-height: 100vh;
         }
 
-        /* ===== Login Screen ===== */
-        .login-screen {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #1a5276, #2980b9);
-        }
-
-        .login-box {
-            background: white;
-            border-radius: 16px;
-            padding: 48px 36px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-        }
-
-        .login-box .login-icon { font-size: 48px; margin-bottom: 12px; }
-        .login-box h2 { font-size: 22px; color: #1a5276; margin-bottom: 4px; }
-        .login-box .login-subtitle { font-size: 14px; color: #888; margin-bottom: 28px; }
-
-        .login-box input[type="password"] {
-            width: 100%; padding: 14px 16px; font-size: 16px;
-            border: 2px solid #ddd; border-radius: 10px; outline: none;
-            transition: border-color 0.2s; text-align: center; letter-spacing: 4px;
-        }
-        .login-box input[type="password"]:focus { border-color: #2980b9; }
-
-        .login-box .login-btn {
-            width: 100%; padding: 14px; font-size: 16px; font-weight: 700;
-            color: white; background: linear-gradient(135deg, #1a5276, #2980b9);
-            border: none; border-radius: 10px; cursor: pointer; margin-top: 16px;
-            transition: opacity 0.2s;
-        }
-        .login-box .login-btn:hover { opacity: 0.9; }
-        .login-box .login-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .login-error { color: #d32f2f; font-size: 14px; margin-top: 12px; display: none; }
-        .login-error.show { display: block; }
-
-        /* ===== Main App (hidden until login) ===== */
-        .app-container { display: none; }
-
         .header {
             background: linear-gradient(135deg, #1a5276, #2980b9);
-            color: white; padding: 24px 20px; text-align: center;
+            color: white;
+            padding: 24px 20px;
+            text-align: center;
             box-shadow: 0 2px 8px rgba(0,0,0,0.15);
         }
-        .header h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
-        .header .subtitle { font-size: 14px; opacity: 0.85; }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .header .subtitle {
+            font-size: 14px;
+            opacity: 0.85;
+        }
 
         /* ===== Tab Navigation ===== */
         .tab-nav {
-            display: flex; justify-content: center; background: white;
-            border-bottom: 2px solid #e0e0e0; box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-            position: sticky; top: 0; z-index: 50;
+            display: flex;
+            justify-content: center;
+            background: white;
+            border-bottom: 2px solid #e0e0e0;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            position: sticky;
+            top: 0;
+            z-index: 50;
         }
+
         .tab-btn {
-            padding: 14px 32px; font-size: 15px; font-weight: 600; color: #888;
-            border: none; background: none; cursor: pointer;
-            border-bottom: 3px solid transparent; transition: all 0.2s; font-family: inherit;
+            padding: 14px 32px;
+            font-size: 15px;
+            font-weight: 600;
+            color: #888;
+            border: none;
+            background: none;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+            font-family: inherit;
         }
-        .tab-btn:hover { color: #2980b9; background: #f0f7fc; }
-        .tab-btn.active { color: #1a5276; border-bottom-color: #2980b9; }
+
+        .tab-btn:hover {
+            color: #2980b9;
+            background: #f0f7fc;
+        }
+
+        .tab-btn.active {
+            color: #1a5276;
+            border-bottom-color: #2980b9;
+        }
+
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
         /* ===== QA styles ===== */
         .search-area {
-            max-width: 900px; margin: -28px auto 0; padding: 0 16px;
-            position: relative; z-index: 10;
+            max-width: 900px;
+            margin: -28px auto 0;
+            padding: 0 16px;
+            position: relative;
+            z-index: 10;
         }
+
         .search-box {
-            background: white; border-radius: 12px; padding: 20px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.1);
         }
-        .search-row { display: flex; gap: 10px; align-items: stretch; }
-        .search-input {
-            flex: 1; padding: 12px 16px; font-size: 16px;
-            border: 2px solid #ddd; border-radius: 8px; outline: none;
-            transition: border-color 0.2s; font-family: inherit;
+
+        .search-row {
+            display: flex;
+            gap: 10px;
+            align-items: stretch;
         }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            font-size: 16px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+
         .search-input:focus { border-color: #2980b9; }
         .search-input::placeholder { color: #aaa; }
 
         .btn {
-            padding: 12px 24px; font-size: 16px; border: none; border-radius: 8px;
-            cursor: pointer; font-weight: 600; transition: background 0.2s; font-family: inherit;
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            font-family: inherit;
         }
+
         .btn-primary { background: #2980b9; color: white; }
         .btn-primary:hover { background: #1a6fa0; }
         .btn-secondary { background: #e0e0e0; color: #555; }
         .btn-secondary:hover { background: #ccc; }
 
-        .filter-row { margin-top: 12px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-        .filter-label { font-size: 14px; color: #666; margin-right: 4px; }
+        .filter-row {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .filter-label {
+            font-size: 14px;
+            color: #666;
+            margin-right: 4px;
+        }
 
         .dept-tag {
-            display: inline-block; padding: 4px 12px; font-size: 13px;
-            border-radius: 20px; border: 1px solid #ccc; background: white;
-            cursor: pointer; transition: all 0.2s; user-select: none;
+            display: inline-block;
+            padding: 4px 12px;
+            font-size: 13px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
         }
+
         .dept-tag:hover { border-color: #2980b9; color: #2980b9; }
         .dept-tag.active { background: #2980b9; color: white; border-color: #2980b9; }
 
-        .stats { max-width: 900px; margin: 16px auto 0; padding: 0 16px; font-size: 14px; color: #777; }
-        .results { max-width: 900px; margin: 12px auto 40px; padding: 0 16px; }
+        .stats {
+            max-width: 900px;
+            margin: 16px auto 0;
+            padding: 0 16px;
+            font-size: 14px;
+            color: #777;
+        }
+
+        .results {
+            max-width: 900px;
+            margin: 12px auto 40px;
+            padding: 0 16px;
+        }
 
         .result-card {
-            background: white; border-radius: 10px; margin-bottom: 12px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; transition: box-shadow 0.2s;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            overflow: hidden;
+            transition: box-shadow 0.2s;
         }
+
         .result-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
 
         .result-header {
-            padding: 16px 20px; cursor: pointer; display: flex; gap: 12px; align-items: flex-start;
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
         }
+
         .result-header:hover { background: #f8f9fa; }
 
         .result-number {
-            background: #2980b9; color: white; font-size: 12px; font-weight: 700;
-            padding: 4px 10px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+            background: #2980b9;
+            color: white;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
+
         .result-dept {
-            background: #e8f4fd; color: #1a5276; font-size: 12px; font-weight: 600;
-            padding: 4px 10px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+            background: #e8f4fd;
+            color: #1a5276;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
+
         .vip-badge {
-            background: #e74c3c; color: white; font-size: 11px; font-weight: 700;
-            padding: 3px 8px; border-radius: 6px; white-space: nowrap; flex-shrink: 0; margin-top: 2px;
+            background: #e74c3c;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
+            margin-top: 2px;
         }
-        .result-title { flex: 1; font-size: 15px; line-height: 1.5; color: #222; }
+
+        .result-title {
+            flex: 1;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #222;
+        }
+
         .result-title mark { background: #fff3cd; color: #333; padding: 0 2px; border-radius: 2px; }
-        .result-toggle { flex-shrink: 0; font-size: 18px; color: #aaa; transition: transform 0.3s; margin-top: 2px; }
+
+        .result-toggle {
+            flex-shrink: 0;
+            font-size: 18px;
+            color: #aaa;
+            transition: transform 0.3s;
+            margin-top: 2px;
+        }
+
         .result-card.open .result-toggle { transform: rotate(180deg); }
 
-        .result-content { display: none; padding: 0 20px 20px; border-top: 1px solid #eee; margin: 0 20px; }
+        .result-content {
+            display: none;
+            padding: 0 20px 20px;
+            border-top: 1px solid #eee;
+            margin: 0 20px;
+        }
+
         .result-card.open .result-content { display: block; }
 
-        .result-content-body { font-size: 14px; line-height: 1.9; color: #333; margin-top: 16px; }
-        .result-content-body .qa-title {
-            font-size: 16px; font-weight: 700; color: #1a5276;
-            margin-bottom: 14px; padding-bottom: 10px; border-bottom: 2px solid #2980b9;
+        .result-content-body {
+            font-size: 14px;
+            line-height: 1.9;
+            color: #333;
+            margin-top: 16px;
         }
+
+        .result-content-body .qa-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a5276;
+            margin-bottom: 14px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #2980b9;
+        }
+
         .result-content-body .qa-line { margin: 4px 0; text-align: justify; }
         .result-content-body .indent-1 { padding-left: 2em; }
         .result-content-body .indent-2 { padding-left: 4em; }
@@ -170,83 +277,344 @@
         .result-content-body .blue { color: #1565c0; }
         .result-content-body .u { text-decoration: underline; text-underline-offset: 3px; }
 
-        .result-content-body .qa-table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+        .result-content-body .qa-table {
+            width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px;
+        }
         .result-content-body .qa-table th,
-        .result-content-body .qa-table td { border: 1px solid #ccc; padding: 8px 10px; text-align: left; vertical-align: top; }
-        .result-content-body .qa-table th { background: #e8f4fd; font-weight: 700; color: #1a5276; }
+        .result-content-body .qa-table td {
+            border: 1px solid #ccc; padding: 8px 10px; text-align: left; vertical-align: top;
+        }
+        .result-content-body .qa-table th {
+            background: #e8f4fd; font-weight: 700; color: #1a5276;
+        }
         .result-content-body .qa-table tr:nth-child(even) { background: #fafafa; }
-        .result-content-body mark { background: #fff3cd; color: inherit; padding: 0 2px; border-radius: 2px; }
+
+        .result-content-body mark {
+            background: #fff3cd; color: inherit; padding: 0 2px; border-radius: 2px;
+        }
 
         .loading { text-align: center; padding: 60px 20px; color: #999; }
-        .keyboard-hint { font-size: 12px; color: #aaa; margin-top: 8px; }
-        .no-results { text-align: center; padding: 60px 20px; color: #999; }
+
+        .keyboard-hint {
+            font-size: 12px;
+            color: #aaa;
+            margin-top: 8px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+
         .no-results .icon { font-size: 48px; margin-bottom: 16px; }
 
         /* ===== Perf Dashboard styles ===== */
-        .perf-area { max-width: 960px; margin: 24px auto 40px; padding: 0 16px; }
-        .perf-search { max-width: 960px; margin: 20px auto 0; padding: 0 16px; }
+        .perf-area {
+            max-width: 960px;
+            margin: 24px auto 40px;
+            padding: 0 16px;
+        }
+
+        .perf-search {
+            max-width: 960px;
+            margin: 20px auto 0;
+            padding: 0 16px;
+        }
+
         .perf-search-box {
-            background: white; border-radius: 12px; padding: 16px 20px;
-            box-shadow: 0 4px 16px rgba(0,0,0,0.1); display: flex; gap: 10px;
+            background: white;
+            border-radius: 12px;
+            padding: 16px 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 10px;
         }
+
         .perf-search-box input {
-            flex: 1; padding: 10px 14px; font-size: 15px;
-            border: 2px solid #ddd; border-radius: 8px; outline: none; font-family: inherit;
+            flex: 1;
+            padding: 10px 14px;
+            font-size: 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            font-family: inherit;
         }
+
         .perf-search-box input:focus { border-color: #2980b9; }
 
-        .kpi-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
+        /* KPI cards */
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
         .kpi-card {
-            background: white; border-radius: 10px; padding: 18px 16px; text-align: center;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06); border-top: 4px solid #2980b9;
+            background: white;
+            border-radius: 10px;
+            padding: 18px 16px;
+            text-align: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            border-top: 4px solid #2980b9;
             transition: transform 0.2s, box-shadow 0.2s;
         }
+
         .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .kpi-card:nth-child(2) { border-top-color: #27ae60; }
         .kpi-card:nth-child(3) { border-top-color: #f39c12; }
         .kpi-card:nth-child(4) { border-top-color: #8e44ad; }
-        .kpi-value { font-size: 28px; font-weight: 800; color: #1a5276; }
+        .kpi-card:nth-child(5) { border-top-color: #e74c3c; }
+        .kpi-card:nth-child(6) { border-top-color: #1abc9c; }
+
+        .kpi-value {
+            font-size: 28px;
+            font-weight: 800;
+            color: #1a5276;
+        }
+
         .kpi-card:nth-child(2) .kpi-value { color: #27ae60; }
         .kpi-card:nth-child(3) .kpi-value { color: #f39c12; }
         .kpi-card:nth-child(4) .kpi-value { color: #8e44ad; }
-        .kpi-label { font-size: 13px; color: #888; margin-top: 4px; }
+        .kpi-card:nth-child(5) .kpi-value { color: #e74c3c; }
+        .kpi-card:nth-child(6) .kpi-value { color: #1abc9c; }
 
+        .kpi-label {
+            font-size: 13px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        /* Perf card */
         .perf-card {
-            background: white; border-radius: 10px; margin-bottom: 14px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.06); overflow: hidden; transition: box-shadow 0.2s;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 14px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+            overflow: hidden;
+            transition: box-shadow 0.2s;
         }
+
         .perf-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
-        .perf-header { padding: 16px 20px; cursor: pointer; display: flex; gap: 12px; align-items: center; }
-        .perf-header:hover { background: #f8f9fa; }
-        .perf-icon { font-size: 22px; flex-shrink: 0; }
-        .perf-title { flex: 1; font-size: 16px; font-weight: 700; color: #1a5276; }
-        .perf-dept-badge {
-            background: #e8f4fd; color: #1a5276; font-size: 12px; font-weight: 600;
-            padding: 4px 12px; border-radius: 6px; white-space: nowrap; flex-shrink: 0;
+
+        .perf-header {
+            padding: 16px 20px;
+            cursor: pointer;
+            display: flex;
+            gap: 12px;
+            align-items: center;
         }
-        .perf-toggle { font-size: 18px; color: #aaa; transition: transform 0.3s; flex-shrink: 0; }
+
+        .perf-header:hover { background: #f8f9fa; }
+
+        .perf-icon { font-size: 22px; flex-shrink: 0; }
+
+        .perf-title {
+            flex: 1;
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a5276;
+        }
+
+        .perf-dept-badge {
+            background: #e8f4fd;
+            color: #1a5276;
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .perf-toggle {
+            font-size: 18px;
+            color: #aaa;
+            transition: transform 0.3s;
+            flex-shrink: 0;
+        }
+
         .perf-card.open .perf-toggle { transform: rotate(180deg); }
-        .perf-body { display: none; padding: 0 20px 24px; border-top: 1px solid #eee; margin: 0 20px; }
+
+        .perf-body {
+            display: none;
+            padding: 0 20px 24px;
+            border-top: 1px solid #eee;
+            margin: 0 20px;
+        }
+
         .perf-card.open .perf-body { display: block; }
 
-        .chart-container { position: relative; width: 100%; max-height: 340px; }
+        /* Chart + text layout */
+        .chart-text-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            align-items: start;
+            margin-top: 20px;
+        }
+
+        @media (max-width: 700px) {
+            .chart-text-row { grid-template-columns: 1fr; }
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-height: 340px;
+        }
+
         .chart-container canvas { max-height: 340px; }
 
-        .related-qa { margin-top: 20px; padding: 14px 18px; background: #f8f9fa; border-radius: 8px; border: 1px solid #e0e0e0; }
-        .related-qa-title { font-size: 13px; font-weight: 700; color: #888; margin-bottom: 8px; }
-        .related-qa-link { display: block; font-size: 13px; color: #2980b9; padding: 5px 0; text-decoration: none; border-bottom: 1px solid #f0f0f0; }
+        .text-content h4 {
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a5276;
+            margin-bottom: 8px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid #2980b9;
+        }
+
+        .text-content p, .text-content li {
+            font-size: 14px;
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .text-content ul { padding-left: 20px; }
+
+        .hl { background: #fff3cd; padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+        .hl-blue { background: #e8f4fd; padding: 1px 5px; border-radius: 3px; font-weight: 600; }
+
+        .sub-divider { border-top: 1px solid #eee; margin: 20px 0; }
+
+        /* Progress bar */
+        .progress-bar { height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; margin: 6px 0; }
+        .progress-fill { height: 100%; border-radius: 4px; }
+
+        /* Related QA */
+        .related-qa {
+            margin-top: 20px;
+            padding: 14px 18px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .related-qa-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #888;
+            margin-bottom: 8px;
+        }
+
+        .related-qa-link {
+            display: block;
+            font-size: 13px;
+            color: #2980b9;
+            padding: 5px 0;
+            text-decoration: none;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
         .related-qa-link:hover { text-decoration: underline; }
         .related-qa-link:last-child { border-bottom: none; }
 
+        /* Department divider */
+        .dept-divider {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 28px 0 16px;
+            font-size: 15px;
+            font-weight: 700;
+            color: #1a5276;
+        }
+
+        .dept-divider::before, .dept-divider::after {
+            content: '';
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #2980b9, transparent);
+        }
+
+        .dept-divider .dept-divider-icon {
+            font-size: 18px;
+        }
+
+        /* Inner KPI row for section bodies */
+        .inner-kpi-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin: 16px 0;
+        }
+
+        .inner-kpi {
+            background: #f8fbfe;
+            border-radius: 10px;
+            padding: 14px 12px;
+            text-align: center;
+            border: 1px solid #e0ecf5;
+        }
+
+        .inner-kpi .kpi-value {
+            font-size: 22px;
+            font-weight: 800;
+        }
+
+        .inner-kpi .kpi-label {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .inner-kpi:nth-child(1) .kpi-value { color: #1a5276; }
+        .inner-kpi:nth-child(2) .kpi-value { color: #27ae60; }
+        .inner-kpi:nth-child(3) .kpi-value { color: #f39c12; }
+        .inner-kpi:nth-child(4) .kpi-value { color: #8e44ad; }
+        .inner-kpi:nth-child(5) .kpi-value { color: #e74c3c; }
+        .inner-kpi:nth-child(6) .kpi-value { color: #1abc9c; }
+
+        /* Header buttons */
+        .header-actions { margin-top: 10px; }
+        .btn-update {
+            display: inline-block; padding: 6px 18px; font-size: 13px; font-weight: 600;
+            color: #2980b9; background: white; border: none; border-radius: 6px; cursor: pointer;
+        }
+        .btn-update:hover { background: #e8f4fd; }
+        .btn-update:disabled { opacity: 0.6; cursor: not-allowed; }
+        .btn-share {
+            display: inline-block; padding: 6px 18px; font-size: 13px; font-weight: 600;
+            color: #1a5276; background: rgba(255,255,255,0.7); border: none; border-radius: 6px;
+            cursor: pointer; margin-left: 8px;
+        }
+        .btn-share:hover { background: white; }
+
+        /* Modal */
+        .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center; }
+        .modal-overlay.show { display:flex; }
+        .modal-box { background:white; border-radius:16px; padding:32px; text-align:center; max-width:360px; width:90%; box-shadow:0 8px 32px rgba(0,0,0,0.2); }
+        .modal-box h3 { font-size:18px; margin-bottom:8px; color:#1a5276; }
+        .modal-box .url-text { font-size:20px; font-weight:700; color:#2980b9; margin:16px 0; word-break:break-all; user-select:all; }
+        .modal-box .hint { font-size:13px; color:#888; margin-top:12px; }
+        .modal-close { margin-top:16px; padding:8px 32px; font-size:14px; border:none; border-radius:8px; background:#e0e0e0; cursor:pointer; }
+        .modal-close:hover { background:#ccc; }
+
+        /* Department divider (dynamic version) */
         .dept-divider { text-align:center; margin:28px 0 14px; position:relative; }
         .dept-divider::before { content:''; position:absolute; left:0; top:50%; width:100%; height:1px; background:linear-gradient(to right,transparent,#ccc,transparent); }
         .dept-divider span { position:relative; background:#f0f2f5; padding:0 16px; font-size:14px; font-weight:700; color:#1a5276; }
 
+        /* Inner KPI (dynamic version inside perf cards) */
         .inner-kpi-row { display:grid; grid-template-columns:repeat(auto-fit,minmax(140px,1fr)); gap:10px; margin:16px 0; }
         .inner-kpi { background:#f8f9fa; border-radius:8px; padding:14px 12px; text-align:center; border-top:3px solid #2980b9; }
         .inner-kpi-value { font-size:22px; font-weight:800; }
         .inner-kpi-label { font-size:12px; color:#888; margin-top:2px; }
 
+        /* Perf text content */
         .perf-text-content { margin-top:16px; max-height:500px; overflow-y:auto; padding-right:8px; }
         .perf-text-content .perf-heading {
             font-size:15px; font-weight:700; color:#1a5276; margin:18px 0 8px;
@@ -270,14 +638,12 @@
             font-size:12px; line-height:1.6; color:#555; margin-bottom:4px;
             padding:6px 10px; background:#f8f9fa; border-radius:4px; font-family:monospace;
         }
-
         /* ===== Stats Visual Dashboard ===== */
         .stats-header { text-align:center; padding:24px 0 8px; }
         .stats-header h2 { font-size:22px; color:#1a5276; }
         .stats-header .stats-date { font-size:13px; color:#888; margin-top:4px; }
         .stats-nav { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; padding:12px 0 20px; }
-        .stats-nav-btn { padding:8px 16px; border:1.5px solid #ddd; border-radius:20px; background:#fff;
-            font-size:13px; cursor:pointer; transition:all .2s; color:#555; }
+        .stats-nav-btn { padding:8px 16px; border:1.5px solid #ddd; border-radius:20px; background:#fff; font-size:13px; cursor:pointer; transition:all .2s; color:#555; }
         .stats-nav-btn:hover { border-color:#2980b9; color:#2980b9; }
         .stats-nav-btn.active { background:#1a5276; color:#fff; border-color:#1a5276; }
         .stats-section { margin-bottom:28px; border-radius:12px; overflow:hidden; background:#fff; box-shadow:0 2px 8px rgba(0,0,0,.06); }
@@ -299,207 +665,112 @@
         .stats-table td { padding:8px 12px; border-bottom:1px solid #eee; }
         .stats-table tr:hover td { background:#f8f9fa; }
         .stats-search-box { max-width:480px; margin:0 auto 16px; }
-        .stats-search-box input { width:100%; padding:10px 16px; border:2px solid #ddd; border-radius:10px;
-            font-size:14px; outline:none; transition:border-color .2s; }
+        .stats-search-box input { width:100%; padding:10px 16px; border:2px solid #ddd; border-radius:10px; font-size:14px; outline:none; transition:border-color .2s; }
         .stats-search-box input:focus { border-color:#2980b9; }
 
         @media (max-width: 600px) {
             .header h1 { font-size: 20px; }
+            .stats-kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .stats-nav-btn { font-size:12px; padding:6px 12px; }
+
             .search-row { flex-direction: column; }
             .btn { width: 100%; }
             .tab-btn { padding: 12px 16px; font-size: 14px; }
             .kpi-row { grid-template-columns: repeat(2, 1fr); }
             .inner-kpi-row { grid-template-columns: repeat(2, 1fr); }
-            .result-header { padding: 12px 14px; }
-            .result-content { margin: 0 14px; padding: 0 14px 14px; }
-            .result-content-body .indent-1 { padding-left: 1em; }
-            .result-content-body .indent-2 { padding-left: 2em; }
-            .result-content-body .indent-3 { padding-left: 3em; }
-            .stats-kpi-grid { grid-template-columns: repeat(2, 1fr); }
-            .stats-nav-btn { font-size:12px; padding:6px 12px; }
         }
     </style>
 </head>
 <body>
-
-    <!-- ===== Login Screen ===== -->
-    <div class="login-screen" id="loginScreen">
-        <div class="login-box">
-            <div class="login-icon">&#128274;</div>
-            <h2>模擬問答搜尋系統</h2>
-            <div class="login-subtitle">新北市政府教育局</div>
-            <input type="password" id="passwordInput" placeholder="請輸入密碼" autocomplete="off">
-            <button class="login-btn" id="loginBtn" onclick="doLogin()">登入</button>
-            <div class="login-error" id="loginError">密碼錯誤，請重新輸入</div>
+    <div class="header">
+        <h1>4-7 模擬問答搜尋系統</h1>
+        <div class="subtitle">新北市政府教育局 府會聯絡</div>
+        <div class="header-actions">
+            <button class="btn-update" id="btnUpdate" onclick="updateData()">🔄 重新轉檔（更新資料）</button>
+            <button class="btn-share" id="btnShare" onclick="showShareModal()">📱 手機連線</button>
         </div>
     </div>
 
-    <!-- ===== Main App ===== -->
-    <div class="app-container" id="appContainer">
-        <div class="header">
-            <h1>4-7 模擬問答搜尋系統</h1>
-            <div class="subtitle">新北市政府教育局 府會聯絡</div>
-        </div>
-
-        <!-- Tab nav -->
-        <div class="tab-nav">
-            <button class="tab-btn active" onclick="switchTab('qa')">模擬問答查詢</button>
-            <button class="tab-btn" onclick="switchTab('perf')">重要績效儀表板</button>
-            <button class="tab-btn" onclick="switchTab('stats')">重要數據統計</button>
-        </div>
-
-        <!-- QA Tab -->
-        <div class="tab-content active" id="tab-qa">
-            <div style="height:28px;"></div>
-            <div class="search-area">
-                <div class="search-box">
-                    <div class="search-row">
-                        <input type="text" class="search-input" id="searchInput"
-                            placeholder="輸入關鍵字搜尋（如：雙語、霸凌、議員姓名...）"
-                            autocomplete="off">
-                        <button class="btn btn-primary" onclick="doSearch()">搜尋</button>
-                        <button class="btn btn-secondary" onclick="clearSearch()">清除</button>
-                    </div>
-                    <div class="filter-row" id="filterRow">
-                        <span class="filter-label">科室篩選：</span>
-                    </div>
-                    <div class="keyboard-hint">按 Enter 搜尋 ｜ 可輸入多個關鍵字，以空格分隔</div>
-                </div>
-            </div>
-
-            <div class="stats" id="stats"></div>
-            <div class="results" id="results">
-                <div class="loading" id="loading">載入資料中...</div>
-            </div>
-        </div>
-
-        <!-- Performance Dashboard Tab -->
-        <div class="tab-content" id="tab-perf">
-            <div class="perf-search">
-                <div class="perf-search-box">
-                    <input type="text" id="perfSearchInput"
-                        placeholder="搜尋績效資料（如：雙語、投資、幼兒園...）"
-                        oninput="filterPerf()">
-                    <button class="btn btn-primary" onclick="filterPerf()">搜尋</button>
-                </div>
-            </div>
-            <div class="perf-area" id="perfArea"></div>
-        </div>
-
-        <!-- Stats Dashboard Tab -->
-        <div class="tab-content" id="tab-stats">
-            <div class="stats-header">
-                <h2>📊 新北市教育局重要數據統計</h2>
-                <div class="stats-date" id="statsDate"></div>
-            </div>
-            <div class="stats-search-box">
-                <input type="text" id="statsSearchInput" placeholder="搜尋數據（如：預算、幼兒園、午餐...）" oninput="filterStatsSections()">
-            </div>
-            <div class="stats-nav" id="statsNav"></div>
-            <div id="statsArea"></div>
+    <!-- Share Modal -->
+    <div class="modal-overlay" id="shareModal" onclick="closeShareModal(event)">
+        <div class="modal-box">
+            <h3>📱 手機 / 平板連線</h3>
+            <p>請確保在同一個 Wi-Fi 網路下</p>
+            <div class="url-text" id="shareUrl">載入中...</div>
+            <div class="qr-img" id="qrImg"></div>
+            <div class="hint">用手機掃描 QR Code 或直接輸入上方網址</div>
+            <button class="modal-close" onclick="closeShareModal()">關閉</button>
         </div>
     </div>
 
-<script src="data.js"></script>
+    <!-- ===== Tab nav ===== -->
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('qa')">模擬問答查詢</button>
+        <button class="tab-btn" onclick="switchTab('perf')">重要績效儀表板</button>
+        <button class="tab-btn" onclick="switchTab('stats')">重要數據統計</button>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- QA Tab (kept as-is)                        -->
+    <!-- ========================================== -->
+    <div class="tab-content active" id="tab-qa">
+        <div style="height:28px;"></div>
+        <div class="search-area">
+            <div class="search-box">
+                <div class="search-row">
+                    <input type="text" class="search-input" id="searchInput"
+                        placeholder="輸入關鍵字搜尋（如：雙語、霸凌、議員姓名...）"
+                        autocomplete="off">
+                    <button class="btn btn-primary" onclick="doSearch()">搜尋</button>
+                    <button class="btn btn-secondary" onclick="clearSearch()">清除</button>
+                </div>
+                <div class="filter-row" id="filterRow">
+                    <span class="filter-label">科室篩選：</span>
+                </div>
+                <div class="keyboard-hint">按 Enter 搜尋 ｜ 可輸入多個關鍵字，以空格分隔</div>
+            </div>
+        </div>
+
+        <div class="stats" id="stats"></div>
+        <div class="results" id="results">
+            <div class="loading" id="loading">載入資料中...</div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- Performance Dashboard Tab                  -->
+    <!-- ========================================== -->
+    <div class="tab-content" id="tab-perf">
+        <div class="perf-search">
+            <div class="perf-search-box">
+                <input type="text" id="perfSearchInput"
+                    placeholder="搜尋績效資料（如：雙語、投資、幼兒園...）"
+                    oninput="filterPerf()">
+                <button class="btn btn-primary" onclick="filterPerf()">搜尋</button>
+            </div>
+        </div>
+        <div class="perf-area" id="perfArea">
+            <!-- Dynamically rendered from perf_data.js -->
+        </div>
+    </div><!-- tab-perf -->
+    <!-- Stats Dashboard Tab -->
+    <div class="tab-content" id="tab-stats">
+        <div class="stats-header">
+            <h2>📊 新北市教育局重要數據統計</h2>
+            <div class="stats-date" id="statsDate"></div>
+        </div>
+        <div class="stats-search-box">
+            <input type="text" id="statsSearchInput" placeholder="搜尋數據（如：預算、幼兒園、午餐...）" oninput="filterStatsSections()">
+        </div>
+        <div class="stats-nav" id="statsNav"></div>
+        <div id="statsArea"></div>
+    </div>
+
 <script src="perf_data.js"></script>
 <script src="stats_data.js"></script>
+<script src="data.js"></script>
 <script>
-// ===== Decryption Logic (AES-GCM + PBKDF2) =====
-let QA_DATA = [];
-let PERF_DATA = [];
-let STATS_UPDATE_DATE = '';
-let STATS_SECTIONS = [];
-
-async function deriveKey(password, salt) {
-    const enc = new TextEncoder();
-    const keyMaterial = await crypto.subtle.importKey(
-        'raw', enc.encode(password), 'PBKDF2', false, ['deriveBits', 'deriveKey']
-    );
-    return crypto.subtle.deriveKey(
-        { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
-        keyMaterial,
-        { name: 'AES-GCM', length: 256 },
-        false,
-        ['decrypt']
-    );
-}
-
-function base64ToBuffer(b64) {
-    const binary = atob(b64);
-    const bytes = new Uint8Array(binary.length);
-    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-    return bytes;
-}
-
-async function decryptEncObj(encObj, password) {
-    const salt = base64ToBuffer(encObj.salt);
-    const iv = base64ToBuffer(encObj.iv);
-    const ciphertext = base64ToBuffer(encObj.data);
-    const key = await deriveKey(password, salt);
-    const decrypted = await crypto.subtle.decrypt(
-        { name: 'AES-GCM', iv: iv }, key, ciphertext
-    );
-    return JSON.parse(new TextDecoder().decode(decrypted));
-}
-
-// ===== Login =====
-async function doLogin() {
-    const btn = document.getElementById('loginBtn');
-    const errorEl = document.getElementById('loginError');
-    const pw = document.getElementById('passwordInput').value;
-    if (!pw) return;
-
-    btn.disabled = true;
-    btn.textContent = '驗證中...';
-    errorEl.classList.remove('show');
-
-    try {
-        // Decrypt QA data (required)
-        QA_DATA = await decryptEncObj(ENCRYPTED_DATA, pw);
-    } catch (e) {
-        errorEl.classList.add('show');
-        btn.disabled = false;
-        btn.textContent = '登入';
-        document.getElementById('passwordInput').value = '';
-        document.getElementById('passwordInput').focus();
-        return;
-    }
-
-    // Decrypt Perf data (independent - failure won't block login)
-    try {
-        if (typeof ENCRYPTED_PERF_DATA !== 'undefined') {
-            PERF_DATA = await decryptEncObj(ENCRYPTED_PERF_DATA, pw);
-        } else {
-            console.warn('ENCRYPTED_PERF_DATA is undefined');
-        }
-    } catch (e) {
-        PERF_DATA = [];
-    }
-
-    // Decrypt Stats data (independent - failure won't block login)
-    try {
-        if (typeof ENCRYPTED_STATS_DATA !== 'undefined') {
-            const statsRaw = await decryptEncObj(ENCRYPTED_STATS_DATA, pw);
-            STATS_UPDATE_DATE = statsRaw.update_date;
-            STATS_SECTIONS = statsRaw.sections;
-        }
-    } catch (e) {
-        console.warn('Stats data decryption failed', e);
-        STATS_SECTIONS = [];
-    }
-
-    // Success - show app
-    document.getElementById('loginScreen').style.display = 'none';
-    document.getElementById('appContainer').style.display = 'block';
-    initApp();
-}
-
-document.getElementById('passwordInput').addEventListener('keydown', e => {
-    if (e.key === 'Enter') doLogin();
-});
-document.getElementById('passwordInput').focus();
-
-// ===== VIP Legislators =====
+// ===== 高關懷議員（原版） =====
 const VIP_LEGISLATORS = ['黃淑君','戴瑋姗','石一佑','卓冠廷','李宇翔','陳乃瑜','民進黨團','陳世軒'];
 
 function countVipMatches(item) {
@@ -512,11 +783,7 @@ let activeDept = '';
 let currentKeywords = [];
 
 // ===== Init =====
-function initApp() {
-    // Hide loading indicator before rendering (renderResults replaces its parent content)
-    const loadingEl = document.getElementById('loading');
-    if (loadingEl) loadingEl.style.display = 'none';
-
+document.addEventListener('DOMContentLoaded', () => {
     buildDeptFilter();
     showAllResults();
     document.getElementById('searchInput').addEventListener('keydown', e => {
@@ -526,8 +793,11 @@ function initApp() {
         if (e.key === 'Enter') filterPerf();
     });
     document.getElementById('searchInput').focus();
+    document.getElementById('loading').style.display = 'none';
+
+    // Render perf dashboard from data and initialize charts
     renderPerfDashboard();
-}
+});
 
 // ===== Tab =====
 function switchTab(tab) {
@@ -548,7 +818,7 @@ function switchTab(tab) {
     }
 }
 
-// ===== QA Functions =====
+// ===== QA Functions（原版完整邏輯） =====
 function buildDeptFilter() {
     const depts = {};
     QA_DATA.forEach(item => {
@@ -668,7 +938,7 @@ function renderResults(results, keywords) {
     stats.textContent = `共找到 ${results.length} 筆資料` +
         (results.length !== QA_DATA.length ? ` / 全部 ${QA_DATA.length} 筆` : '');
     if (results.length === 0) {
-        container.innerHTML = '<div class="no-results"><div class="icon">&#128269;</div><div>找不到符合的資料，請嘗試其他關鍵字</div></div>';
+        container.innerHTML = '<div class="no-results"><div class="icon">🔍</div><div>找不到符合的資料，請嘗試其他關鍵字</div></div>';
         return;
     }
     container.innerHTML = results.map(item => `
@@ -694,9 +964,11 @@ function toggleCard(id) {
         const item = QA_DATA.find(d => d.id === id);
         if (item) {
             const titleHtml = item.title_html
-                ? highlightRichHtml(item.title_html, currentKeywords) : '';
+                ? highlightRichHtml(item.title_html, currentKeywords)
+                : '';
             const contentHtml = item.content_html
-                ? highlightRichHtml(item.content_html, currentKeywords) : '';
+                ? highlightRichHtml(item.content_html, currentKeywords)
+                : '';
             body.innerHTML = titleHtml + contentHtml;
             body.dataset.loaded = '1';
         }
@@ -712,8 +984,10 @@ function filterPerf() {
         const text = card.textContent + ' ' + (card.dataset.keywords||'');
         card.style.display = text.includes(query) ? '' : 'none';
     });
+    // Also show/hide dept dividers
     document.querySelectorAll('.dept-divider').forEach(div => {
         if (!query) { div.style.display = ''; return; }
+        // Show divider if any next sibling perf-card is visible
         let next = div.nextElementSibling;
         let anyVisible = false;
         while (next && !next.classList.contains('dept-divider')) {
@@ -731,6 +1005,7 @@ function togglePerf(header) {
     const card = header.closest('.perf-card');
     card.classList.toggle('open');
     if (card.classList.contains('open')) {
+        // Lazy-init charts when section opens
         setTimeout(() => initChartsInCard(card), 50);
     }
 }
@@ -745,10 +1020,11 @@ function jumpToQA(keyword) {
 
 // ===== Dynamic Perf Rendering =====
 function renderPerfDashboard() {
-    if (!PERF_DATA || PERF_DATA.length === 0) return;
+    if (typeof PERF_DATA === 'undefined') return;
     const area = document.getElementById('perfArea');
     if (!area) return;
 
+    // Group sections by department
     const deptOrder = [];
     const deptSections = {};
     PERF_DATA.forEach(s => {
@@ -759,7 +1035,10 @@ function renderPerfDashboard() {
         deptSections[s.dept].push(s);
     });
 
+    // Build global KPI row from key sections
     let html = '';
+
+    // Top KPI row (pick 4 headline numbers)
     html += '<div class="kpi-row">';
     html += '<div class="kpi-card"><div class="kpi-value">100+億</div><div class="kpi-label">108-115 教育總投資</div></div>';
     html += '<div class="kpi-card"><div class="kpi-value">283所</div><div class="kpi-label">雙語實驗學校</div></div>';
@@ -767,10 +1046,14 @@ function renderPerfDashboard() {
     html += '<div class="kpi-card"><div class="kpi-value">278所</div><div class="kpi-label">圖書館完成改造</div></div>';
     html += '</div>';
 
+    // Render sections grouped by dept
     deptOrder.forEach(dept => {
         html += `<div class="dept-divider"><span>${dept}</span></div>`;
-        deptSections[dept].forEach(s => {
-            html += `<div class="perf-card" data-keywords="${escapeHtml(s.keywords)}" data-num="${s.num}">`;
+        deptSections[dept].forEach((s, idx) => {
+            const isFirstSection = (s.num === '14'); // 工程科 open by default
+            const openClass = isFirstSection ? ' open' : '';
+
+            html += `<div class="perf-card${openClass}" data-keywords="${escapeHtml(s.keywords)}" data-num="${s.num}">`;
             html += `<div class="perf-header" onclick="togglePerf(this)">`;
             html += `<span class="perf-icon">${s.icon}</span>`;
             html += `<span class="perf-title">${escapeHtml(s.title)}</span>`;
@@ -779,9 +1062,10 @@ function renderPerfDashboard() {
             html += `</div>`;
             html += `<div class="perf-body">`;
 
+            // KPI cards
             if (s.kpis && s.kpis.length > 0) {
                 html += '<div class="inner-kpi-row">';
-                s.kpis.forEach(kpi => {
+                s.kpis.forEach((kpi, ki) => {
                     html += `<div class="inner-kpi" style="border-top-color:${kpi.color}">`;
                     html += `<div class="inner-kpi-value" style="color:${kpi.color}">${escapeHtml(kpi.value)}</div>`;
                     html += `<div class="inner-kpi-label">${escapeHtml(kpi.label)}</div>`;
@@ -790,12 +1074,14 @@ function renderPerfDashboard() {
                 html += '</div>';
             }
 
+            // Charts (rendered as canvas placeholders)
             if (s.charts && s.charts.length > 0) {
                 s.charts.forEach(chart => {
                     html += `<div class="chart-container"><canvas id="${chart.id}"></canvas></div>`;
                 });
             }
 
+            // Text content (structured rich text)
             if (s.lines && s.lines.length > 0) {
                 html += '<div class="perf-text-content">';
                 s.lines.forEach(ln => {
@@ -830,25 +1116,29 @@ function renderPerfDashboard() {
                 html += '</div>';
             }
 
+            // Related QA links
             if (s.relatedQA && s.relatedQA.length > 0) {
                 html += '<div class="related-qa">';
-                html += '<div class="related-qa-title">&#128279; 相關模擬問答</div>';
+                html += '<div class="related-qa-title">🔗 相關模擬問答</div>';
                 s.relatedQA.forEach(qa => {
                     html += `<a class="related-qa-link" href="#" onclick="jumpToQA('${escapeHtml(qa.keyword)}')">${escapeHtml(qa.text)}</a>`;
                 });
                 html += '</div>';
             }
 
-            html += '</div></div>';
+            html += '</div>'; // perf-body
+            html += '</div>'; // perf-card
         });
     });
 
     area.innerHTML = html;
+
+    // Initialize charts for the default open section
     initVisibleCharts();
 }
 
 function initVisibleCharts() {
-    if (!PERF_DATA || PERF_DATA.length === 0) return;
+    if (typeof PERF_DATA === 'undefined') return;
     document.querySelectorAll('.perf-card.open').forEach(card => {
         initChartsInCard(card);
     });
@@ -866,8 +1156,13 @@ function initChartsInCard(card) {
 
         const datasets = chartDef.datasets.map(ds => {
             const d = {...ds};
-            if (chartDef.type === 'line') { d.tension = 0.3; d.pointRadius = 5; }
-            if (chartDef.type === 'bar') { d.borderRadius = 5; }
+            if (chartDef.type === 'line') {
+                d.tension = 0.3;
+                d.pointRadius = 5;
+            }
+            if (chartDef.type === 'bar') {
+                d.borderRadius = 5;
+            }
             return d;
         });
 
@@ -913,15 +1208,11 @@ let _statsChartInstances = [];
 function renderStatsTab() {
     if (typeof STATS_SECTIONS === 'undefined') return;
     document.getElementById('statsDate').textContent = '更新日期：' + (typeof STATS_UPDATE_DATE !== 'undefined' ? STATS_UPDATE_DATE : '');
-
-    // Build nav buttons
     const nav = document.getElementById('statsNav');
-    nav.innerHTML = '<button class="stats-nav-btn active" onclick="scrollToStatsSection(\'all\')">全部</button>';
+    nav.innerHTML = '<button class="stats-nav-btn active" onclick="scrollToStatsSection(&#39;all&#39;)">全部</button>';
     STATS_SECTIONS.forEach(sec => {
-        nav.innerHTML += '<button class="stats-nav-btn" onclick="scrollToStatsSection(\'' + sec.id + '\')">' + sec.icon + ' ' + sec.title + '</button>';
+        nav.innerHTML += '<button class="stats-nav-btn" onclick="scrollToStatsSection(&#39;' + sec.id + '&#39;)">' + sec.icon + ' ' + sec.title + '</button>';
     });
-
-    // Build sections
     const area = document.getElementById('statsArea');
     area.innerHTML = '';
     STATS_SECTIONS.forEach(sec => {
@@ -930,13 +1221,10 @@ function renderStatsTab() {
         div.id = 'stats-sec-' + sec.id;
         div.dataset.title = sec.title;
         div.dataset.keywords = JSON.stringify(sec.kpis.map(k => k.label).concat(sec.charts.map(c => c.title)));
-
         let html = '<div class="stats-section-header" style="background:' + sec.color + '">';
         html += '<span class="sec-icon">' + sec.icon + '</span>';
         html += '<h3>' + sec.title + '</h3></div>';
         html += '<div class="stats-section-body">';
-
-        // KPIs
         if (sec.kpis.length) {
             html += '<div class="stats-kpi-grid">';
             sec.kpis.forEach(k => {
@@ -946,15 +1234,11 @@ function renderStatsTab() {
             });
             html += '</div>';
         }
-
-        // Charts
         sec.charts.forEach((ch, ci) => {
             const canvasId = 'stats-chart-' + sec.id + '-' + ci;
             html += '<div class="stats-chart-wrap"><h4>' + ch.title + '</h4>';
             html += '<canvas id="' + canvasId + '"></canvas></div>';
         });
-
-        // Tables
         sec.tables.forEach(tbl => {
             html += '<div class="stats-table-wrap"><h4>' + tbl.title + '</h4>';
             html += '<table class="stats-table"><thead><tr>';
@@ -967,13 +1251,10 @@ function renderStatsTab() {
             });
             html += '</tbody></table></div>';
         });
-
         html += '</div>';
         div.innerHTML = html;
         area.appendChild(div);
     });
-
-    // Init charts after DOM render
     setTimeout(initStatsCharts, 150);
 }
 
@@ -981,13 +1262,11 @@ function initStatsCharts() {
     _statsChartInstances.forEach(c => c.destroy());
     _statsChartInstances = [];
     if (typeof STATS_SECTIONS === 'undefined') return;
-
     STATS_SECTIONS.forEach(sec => {
         sec.charts.forEach((ch, ci) => {
             const canvasId = 'stats-chart-' + sec.id + '-' + ci;
             const canvas = document.getElementById(canvasId);
             if (!canvas) return;
-
             const datasets = ch.datasets.map(ds => {
                 const d = { label: ds.label, data: ds.data };
                 if (ds.borderColor) d.borderColor = ds.borderColor;
@@ -1000,32 +1279,21 @@ function initStatsCharts() {
                 if (ch.type === 'bar' && !ds.backgroundColor) d.backgroundColor = ds.borderColor || sec.color;
                 return d;
             });
-
             const options = {
-                responsive: true,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: { position: 'top', labels: { font: { size: 11 } } }
-                }
+                responsive: true, maintainAspectRatio: true,
+                plugins: { legend: { position: 'top', labels: { font: { size: 11 } } } }
             };
-
             if (ch.type === 'doughnut') {
                 options.plugins.legend = { position: 'bottom', labels: { font: { size: 11 } } };
             }
-
             if (ch.dualAxis) {
                 options.scales = {
                     y: { type: 'linear', display: true, position: 'left' },
                     y1: { type: 'linear', display: true, position: 'right', grid: { drawOnChartArea: false } }
                 };
             }
-
             try {
-                const inst = new Chart(canvas, {
-                    type: ch.type,
-                    data: { labels: ch.labels, datasets: datasets },
-                    options: options
-                });
+                const inst = new Chart(canvas, { type: ch.type, data: { labels: ch.labels, datasets: datasets }, options: options });
                 _statsChartInstances.push(inst);
             } catch(e) { console.warn('Chart error:', canvasId, e); }
         });
@@ -1044,7 +1312,6 @@ function scrollToStatsSection(id) {
     const el = document.getElementById('stats-sec-' + id);
     if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // highlight nav
         document.querySelectorAll('.stats-nav-btn').forEach(b => {
             if (b.textContent.includes(STATS_SECTIONS.find(s => s.id === id)?.title || '')) b.classList.add('active');
         });
@@ -1067,6 +1334,53 @@ function filterStatsSections() {
     }
     setTimeout(initStatsCharts, 100);
 }
+
+
+// ===== Update Data & Share Modal =====
+async function updateData() {
+    const btn = document.getElementById('btnUpdate');
+    const origText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '⏳ 轉檔中，請稍候...';
+    try {
+        const resp = await fetch('/api/convert-all', { method: 'POST' });
+        const data = await resp.json();
+        if (data.success) {
+            btn.innerHTML = '✅ 轉檔完成！重新載入中...';
+            setTimeout(() => location.reload(), 800);
+        } else {
+            alert('轉檔失敗：' + data.message);
+            btn.innerHTML = origText;
+            btn.disabled = false;
+        }
+    } catch (e) {
+        alert('無法連線到伺服器。\n\n請確認是否透過 server.py 或啟動.bat 開啟網頁。');
+        btn.innerHTML = origText;
+        btn.disabled = false;
+    }
+}
+
+async function showShareModal() {
+    const modal = document.getElementById('shareModal');
+    modal.classList.add('show');
+    try {
+        const resp = await fetch('/api/info', { method: 'POST' });
+        const data = await resp.json();
+        document.getElementById('shareUrl').textContent = data.url;
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(data.url)}`;
+        document.getElementById('qrImg').innerHTML = `<img src="${qrUrl}" width="200" height="200" alt="QR Code" style="border-radius:8px;">`;
+    } catch(e) {
+        document.getElementById('shareUrl').textContent = window.location.href;
+        document.getElementById('qrImg').innerHTML = '<p style="color:#999;font-size:13px;">無法產生 QR Code（需透過伺服器啟動）</p>';
+    }
+}
+
+function closeShareModal(event) {
+    if (!event || event.target === event.currentTarget) {
+        document.getElementById('shareModal').classList.remove('show');
+    }
+}
+
 </script>
 </body>
 </html>
