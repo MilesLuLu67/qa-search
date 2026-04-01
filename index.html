@@ -407,6 +407,8 @@
 // ===== Decryption Logic (AES-GCM + PBKDF2) =====
 let QA_DATA = [];
 let PERF_DATA = [];
+let STATS_UPDATE_DATE = '';
+let STATS_SECTIONS = [];
 
 async function deriveKey(password, salt) {
     const enc = new TextEncoder();
@@ -472,6 +474,18 @@ async function doLogin() {
         }
     } catch (e) {
         PERF_DATA = [];
+    }
+
+    // Decrypt Stats data (independent - failure won't block login)
+    try {
+        if (typeof ENCRYPTED_STATS_DATA !== 'undefined') {
+            const statsRaw = await decryptEncObj(ENCRYPTED_STATS_DATA, pw);
+            STATS_UPDATE_DATE = statsRaw.update_date;
+            STATS_SECTIONS = statsRaw.sections;
+        }
+    } catch (e) {
+        console.warn('Stats data decryption failed', e);
+        STATS_SECTIONS = [];
     }
 
     // Success - show app
