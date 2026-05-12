@@ -689,35 +689,44 @@ function renderMayorResults(items) {
     const container = document.getElementById('mayorResults');
     const statsEl = document.getElementById('mayorStats');
     if (items.length === 0) {
-        container.innerHTML = '<div class="no-results">找不到符合條件的資料，請調整搜尋關鍵字或篩選條件</div>';
+        container.innerHTML = '<div class="no-results"><div class="icon">🔍</div><div>找不到符合條件的資料，請調整搜尋關鍵字或篩選條件</div></div>';
         statsEl.textContent = '';
         return;
     }
     statsEl.textContent = `共 ${items.length} 筆資料`;
-    let html = '';
-    items.forEach(item => {
-        let titleHtml = item.title_html || escapeHtml(item.title);
-        let contentHtml = item.content_html || '';
-        if (mayorCurrentKeywords.length > 0) {
-            mayorCurrentKeywords.forEach(kw => {
-                const re = new RegExp('(' + kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
-                titleHtml = titleHtml.replace(re, '<mark>$1</mark>');
-                contentHtml = contentHtml.replace(re, '<mark>$1</mark>');
-            });
-        }
-        const vipCount = countVipMatches(item);
-        const vipBadge = vipCount > 0 ? `<span class="vip-badge" title="高關懷議員">⚠️ 高關懷</span>` : '';
-        html += `<div class="result-card">
-            <div class="result-header">
-                <span class="dept-badge">${escapeHtml(item.dept || item.dept_code)}</span>
+    container.innerHTML = items.map(item => `
+        <div class="result-card" id="mayor-card-${item.id}" data-item-id="${item.id}">
+            <div class="result-header" onclick="toggleMayorCard(${item.id})">
                 <span class="result-number">${escapeHtml(item.dept_code)}-${escapeHtml(item.number)}</span>
-                ${vipBadge}
+                <span class="result-dept">${escapeHtml(item.dept || item.dept_code)}</span>
+                ${countVipMatches(item) > 0 ? '<span class="vip-badge">★ 高關懷</span>' : ''}
+                <span class="result-title">${highlightPlainText(item.title, mayorCurrentKeywords)}</span>
+                <span class="result-toggle">&#9660;</span>
             </div>
-            <div class="result-title">${titleHtml}</div>
-            <div class="result-content">${contentHtml}</div>
-        </div>`;
-    });
-    container.innerHTML = html;
+            <div class="result-content">
+                <div class="result-content-body" id="mayor-body-${item.id}"></div>
+            </div>
+        </div>
+    `).join('');
+}
+
+function toggleMayorCard(id) {
+    const card = document.getElementById(`mayor-card-${id}`);
+    const body = document.getElementById(`mayor-body-${id}`);
+    if (!body.dataset.loaded) {
+        const item = MAYOR_DATA.find(d => d.id === id);
+        if (item) {
+            const titleHtml = item.title_html
+                ? highlightRichHtml(item.title_html, mayorCurrentKeywords)
+                : '';
+            const contentHtml = item.content_html
+                ? highlightRichHtml(item.content_html, mayorCurrentKeywords)
+                : '';
+            body.innerHTML = titleHtml + contentHtml;
+            body.dataset.loaded = '1';
+        }
+    }
+    card.classList.toggle('open');
 }
 
 // ===== QA Functions =====
