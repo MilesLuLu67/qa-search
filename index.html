@@ -341,13 +341,39 @@
 
         <!-- Tab nav -->
         <div class="tab-nav">
-            <button class="tab-btn active" onclick="switchTab('qa')">模擬問答查詢</button>
+            <button class="tab-btn active" onclick="switchTab('mayor')">市長版Q&A</button>
+            <button class="tab-btn" onclick="switchTab('qa')">模擬問答查詢</button>
             <button class="tab-btn" onclick="switchTab('perf')">重要績效儀表板</button>
             <button class="tab-btn" onclick="switchTab('stats')">重要數據統計</button>
         </div>
 
+        <!-- Mayor QA Tab -->
+        <div class="tab-content active" id="tab-mayor">
+            <div style="height:28px;"></div>
+            <div class="search-area">
+                <div class="search-box">
+                    <div class="search-row">
+                        <input type="text" class="search-input" id="mayorSearchInput"
+                            placeholder="輸入關鍵字搜尋市長版Q&A（如：營養午餐、校舍、議員姓名...）"
+                            autocomplete="off">
+                        <button class="btn btn-primary" onclick="doMayorSearch()">搜尋</button>
+                        <button class="btn btn-secondary" onclick="clearMayorSearch()">清除</button>
+                    </div>
+                    <div class="filter-row" id="mayorFilterRow">
+                        <span class="filter-label">科室篩選：</span>
+                    </div>
+                    <div class="keyboard-hint">按 Enter 搜尋 ｜ 可輸入多個關鍵字，以空格分隔</div>
+                </div>
+            </div>
+
+            <div class="stats" id="mayorStats"></div>
+            <div class="results" id="mayorResults">
+                <div class="loading" id="mayorLoading">載入資料中...</div>
+            </div>
+        </div>
+
         <!-- QA Tab -->
-        <div class="tab-content active" id="tab-qa">
+        <div class="tab-content" id="tab-qa">
             <div style="height:28px;"></div>
             <div class="search-area">
                 <div class="search-box">
@@ -398,11 +424,13 @@
         </div>
     </div>
 
+<script src="mayor_data.js"></script>
 <script src="data.js"></script>
 <script src="perf_data.js"></script>
 <script src="stats_data.js"></script>
 <script>
 // ===== Decryption Logic (AES-GCM + PBKDF2) =====
+let MAYOR_DATA = [];
 let QA_DATA = [];
 let PERF_DATA = [];
 let STATS_UPDATE_DATE = '';
@@ -474,6 +502,16 @@ async function doLogin() {
         return;
     }
 
+    // Decrypt Mayor QA data (independent - failure won't block login)
+    try {
+        btn.textContent = '解密市長版Q&A資料中...';
+        if (typeof ENCRYPTED_MAYOR_DATA !== 'undefined') {
+            MAYOR_DATA = await decryptEncObj(ENCRYPTED_MAYOR_DATA, pw);
+        }
+    } catch (e) {
+        MAYOR_DATA = [];
+    }
+
     // Decrypt Perf data (independent - failure won't block login)
     try {
         btn.textContent = '解密績效資料中...';
@@ -519,12 +557,25 @@ function countVipMatches(item) {
 // ===== State =====
 let activeDept = '';
 let currentKeywords = [];
+let mayorActiveDept = '';
+let mayorCurrentKeywords = [];
 
 // ===== Init =====
 function initApp() {
-    // Hide loading indicator before rendering (renderResults replaces its parent content)
+    // Hide loading indicators
     const loadingEl = document.getElementById('loading');
     if (loadingEl) loadingEl.style.display = 'none';
+    const mayorLoadingEl = document.getElementById('mayorLoading');
+    if (mayorLoadingEl) mayorLoadingEl.style.display = 'none';
+
+    // Mayor tab init
+    if (MAYOR_DATA.length > 0) {
+        buildMayorDeptFilter();
+        showAllMayorResults();
+        document.getElementById('mayorSearchInput').addEventListener('keydown', e => {
+            if (e.key === 'Enter') doMayorSearch();
+        });
+    }
 
     buildDeptFilter();
     showAllResults();
@@ -534,7 +585,7 @@ function initApp() {
     document.getElementById('perfSearchInput').addEventListener('keydown', e => {
         if (e.key === 'Enter') filterPerf();
     });
-    document.getElementById('searchInput').focus();
+    document.getElementById('mayorSearchInput').focus();
     renderPerfDashboard();
 }
 
@@ -543,18 +594,130 @@ function switchTab(tab) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     const btns = document.querySelectorAll('.tab-btn');
-    if (tab === 'qa') {
+    if (tab === 'mayor') {
         btns[0].classList.add('active');
+        document.getElementById('tab-mayor').classList.add('active');
+    } else if (tab === 'qa') {
+        btns[1].classList.add('active');
         document.getElementById('tab-qa').classList.add('active');
     } else if (tab === 'perf') {
-        btns[1].classList.add('active');
+        btns[2].classList.add('active');
         document.getElementById('tab-perf').classList.add('active');
         setTimeout(initVisibleCharts, 100);
     } else if (tab === 'stats') {
-        btns[2].classList.add('active');
+        btns[3].classList.add('active');
         document.getElementById('tab-stats').classList.add('active');
         if (!window._statsRendered) { renderStatsTab(); window._statsRendered = true; }
     }
+}
+
+// ===== Mayor QA Functions =====
+function buildMayorDeptFilter() {
+    const depts = {};
+    MAYOR_DATA.forEach(item => {
+        const key = item.dept || item.dept_code;
+        if (key) depts[key] = (depts[key] || 0) + 1;
+    });
+    const row = document.getElementById('mayorFilterRow');
+    const allTag = createMayorDeptTag('全部', MAYOR_DATA.length, '');
+    allTag.classList.add('active');
+    row.appendChild(allTag);
+    const sorted = Object.entries(depts).sort((a, b) => b[1] - a[1]);
+    sorted.forEach(([dept, count]) => {
+        row.appendChild(createMayorDeptTag(dept, count, dept));
+    });
+}
+
+function createMayorDeptTag(label, count, value) {
+    const tag = document.createElement('span');
+    tag.className = 'dept-tag';
+    tag.textContent = `${label} (${count})`;
+    tag.dataset.dept = value;
+    tag.onclick = () => {
+        document.querySelectorAll('#mayorFilterRow .dept-tag').forEach(t => t.classList.remove('active'));
+        tag.classList.add('active');
+        mayorActiveDept = value;
+        doMayorSearch();
+    };
+    return tag;
+}
+
+function doMayorSearch() {
+    const query = document.getElementById('mayorSearchInput').value.trim();
+    mayorCurrentKeywords = query ? query.split(/\s+/) : [];
+    let items = MAYOR_DATA;
+    if (mayorActiveDept) {
+        items = items.filter(item => (item.dept || item.dept_code) === mayorActiveDept);
+    }
+    if (mayorCurrentKeywords.length > 0) {
+        items = items.filter(item => {
+            const text = item.title + ' ' + item.plain + ' ' + (item.filename || '');
+            return mayorCurrentKeywords.every(kw => text.toLowerCase().includes(kw.toLowerCase()));
+        });
+        items.sort((a, b) => {
+            const aVip = countVipMatches(a);
+            const bVip = countVipMatches(b);
+            if (bVip !== aVip) return bVip - aVip;
+            const aScore = mayorCurrentKeywords.reduce((s, kw) => {
+                const re = new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+                return s + ((item => (item.title + ' ' + item.plain).match(re) || [])(a)).length;
+            }, 0);
+            const bScore = mayorCurrentKeywords.reduce((s, kw) => {
+                const re = new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+                return s + ((item => (item.title + ' ' + item.plain).match(re) || [])(b)).length;
+            }, 0);
+            return bScore - aScore;
+        });
+    }
+    renderMayorResults(items);
+}
+
+function clearMayorSearch() {
+    document.getElementById('mayorSearchInput').value = '';
+    mayorCurrentKeywords = [];
+    mayorActiveDept = '';
+    document.querySelectorAll('#mayorFilterRow .dept-tag').forEach(t => t.classList.remove('active'));
+    document.querySelector('#mayorFilterRow .dept-tag').classList.add('active');
+    showAllMayorResults();
+}
+
+function showAllMayorResults() {
+    renderMayorResults(MAYOR_DATA);
+}
+
+function renderMayorResults(items) {
+    const container = document.getElementById('mayorResults');
+    const statsEl = document.getElementById('mayorStats');
+    if (items.length === 0) {
+        container.innerHTML = '<div class="no-results">找不到符合條件的資料，請調整搜尋關鍵字或篩選條件</div>';
+        statsEl.textContent = '';
+        return;
+    }
+    statsEl.textContent = `共 ${items.length} 筆資料`;
+    let html = '';
+    items.forEach(item => {
+        let titleHtml = item.title_html || escapeHtml(item.title);
+        let contentHtml = item.content_html || '';
+        if (mayorCurrentKeywords.length > 0) {
+            mayorCurrentKeywords.forEach(kw => {
+                const re = new RegExp('(' + kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+                titleHtml = titleHtml.replace(re, '<mark>$1</mark>');
+                contentHtml = contentHtml.replace(re, '<mark>$1</mark>');
+            });
+        }
+        const vipCount = countVipMatches(item);
+        const vipBadge = vipCount > 0 ? `<span class="vip-badge" title="高關懷議員">⚠️ 高關懷</span>` : '';
+        html += `<div class="result-card">
+            <div class="result-header">
+                <span class="dept-badge">${escapeHtml(item.dept || item.dept_code)}</span>
+                <span class="result-number">${escapeHtml(item.dept_code)}-${escapeHtml(item.number)}</span>
+                ${vipBadge}
+            </div>
+            <div class="result-title">${titleHtml}</div>
+            <div class="result-content">${contentHtml}</div>
+        </div>`;
+    });
+    container.innerHTML = html;
 }
 
 // ===== QA Functions =====
