@@ -595,10 +595,10 @@ function switchTab(tab) {
     document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
     const btns = document.querySelectorAll('.tab-btn');
     if (tab === 'mayor') {
-        btns[0].classList.add('active');
+        btns[1].classList.add('active');
         document.getElementById('tab-mayor').classList.add('active');
     } else if (tab === 'qa') {
-        btns[1].classList.add('active');
+        btns[0].classList.add('active');
         document.getElementById('tab-qa').classList.add('active');
     } else if (tab === 'perf') {
         btns[2].classList.add('active');
